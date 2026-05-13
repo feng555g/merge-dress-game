@@ -24,7 +24,7 @@
     "id": "recipe_coat_travel",
     "name": "出行外套配方",
     "result": "coat_travel",
-    "ingredients": [{"item_id": "fabric_2", "count": 3}, {"item_id": "silk_3", "count": 1}],
+    "ingredients": [{"item_id": "fabric_2", "count": 3}, {"item_id": "fabric_3", "count": 1}],
     "chapter": 2
   },
   {
@@ -52,7 +52,7 @@
     "id": "recipe_dress_evening",
     "name": "晚礼服配方",
     "result": "dress_evening",
-    "ingredients": [{"item_id": "silk_3", "count": 3}, {"item_id": "cut_gem", "count": 2}],
+    "ingredients": [{"item_id": "fabric_3", "count": 3}, {"item_id": "cut_gem", "count": 2}],
     "chapter": 3
   },
   {
@@ -66,7 +66,7 @@
     "id": "recipe_painting",
     "name": "壁画配方",
     "result": "painting",
-    "ingredients": [{"item_id": "cut_gem", "count": 1}, {"item_id": "silk_3", "count": 2}],
+    "ingredients": [{"item_id": "cut_gem", "count": 1}, {"item_id": "fabric_3", "count": 2}],
     "chapter": 3
   }
 ]

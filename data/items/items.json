@@ -13,7 +13,7 @@
   {"id": "wood_3", "name": "木料", "type": "merge_item", "tier": 3, "merge_into": null, "drops": ["plank"], "color": "#3E2723"},
   {"id": "fabric_1", "name": "粗布", "type": "material", "category": "cloth", "color": "#FFF9C4"},
   {"id": "fabric_2", "name": "细布", "type": "material", "category": "cloth", "color": "#FFF176"},
-  {"id": "silk_3", "name": "丝绸", "type": "material", "category": "cloth", "color": "#FFEE58"},
+  {"id": "fabric_3", "name": "丝绸", "type": "material", "category": "cloth", "color": "#FFEE58"},
   {"id": "gem_chip", "name": "宝石碎片", "type": "material", "category": "gem", "color": "#B3E5FC"},
   {"id": "cut_gem", "name": "切割宝石", "type": "material", "category": "gem", "color": "#81D4FA"},
   {"id": "plank", "name": "木板", "type": "material", "category": "wood", "color": "#BCAAA4"},
