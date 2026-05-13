@@ -404,6 +404,131 @@
         }
       }
     }
+
+    class Game {
+      constructor() {
+        this.canvas = document.getElementById('gameCanvas');
+        this.ctx = this.canvas.getContext('2d');
+        this.gameState = new GameState();
+        this.saveSystem = new SaveSystem(this.gameState);
+        this.dataLoader = new DataLoader();
+        this.assetLoader = new AssetLoader();
+        this.sceneManager = new SceneManager(this);
+
+        this.lastTime = 0;
+        this.isRunning = false;
+
+        this.setupInputHandlers();
+      }
+
+      setupInputHandlers() {
+        const getCanvasCoords = (clientX, clientY) => {
+          const rect = this.canvas.getBoundingClientRect();
+          const scaleX = this.canvas.width / rect.width;
+          const scaleY = this.canvas.height / rect.height;
+          return {
+            x: (clientX - rect.left) * scaleX,
+            y: (clientY - rect.top) * scaleY
+          };
+        };
+
+        // Mouse events
+        this.canvas.addEventListener('mousedown', (e) => {
+          const coords = getCanvasCoords(e.clientX, e.clientY);
+          this.sceneManager.handleMouseDown(coords.x, coords.y);
+        });
+
+        this.canvas.addEventListener('mousemove', (e) => {
+          const coords = getCanvasCoords(e.clientX, e.clientY);
+          this.sceneManager.handleMouseMove(coords.x, coords.y);
+        });
+
+        this.canvas.addEventListener('mouseup', (e) => {
+          const coords = getCanvasCoords(e.clientX, e.clientY);
+          this.sceneManager.handleMouseUp(coords.x, coords.y);
+        });
+
+        // Touch events
+        this.canvas.addEventListener('touchstart', (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const coords = getCanvasCoords(touch.clientX, touch.clientY);
+          this.sceneManager.handleMouseDown(coords.x, coords.y);
+        });
+
+        this.canvas.addEventListener('touchmove', (e) => {
+          e.preventDefault();
+          const touch = e.touches[0];
+          const coords = getCanvasCoords(touch.clientX, touch.clientY);
+          this.sceneManager.handleMouseMove(coords.x, coords.y);
+        });
+
+        this.canvas.addEventListener('touchend', (e) => {
+          e.preventDefault();
+          if (e.changedTouches.length > 0) {
+            const touch = e.changedTouches[0];
+            const coords = getCanvasCoords(touch.clientX, touch.clientY);
+            this.sceneManager.handleMouseUp(coords.x, coords.y);
+          }
+        });
+      }
+
+      async init() {
+        // Update loading screen
+        const updateLoading = (loaded, total) => {
+          const percent = Math.floor((loaded / total) * 100);
+          document.getElementById('loadingProgress').style.width = percent + '%';
+          document.getElementById('loadingText').textContent = `加载中... ${percent}%`;
+        };
+
+        // Load data
+        updateLoading(0, 2);
+        await this.dataLoader.loadAll();
+        updateLoading(1, 2);
+
+        // Load assets
+        await this.assetLoader.loadAll((loaded, total) => {
+          updateLoading(1 + (loaded / total), 2);
+        });
+
+        // Load save
+        this.saveSystem.load();
+
+        // Hide loading screen
+        document.getElementById('loadingScreen').style.display = 'none';
+
+        // Start game loop
+        this.isRunning = true;
+        this.lastTime = performance.now();
+        this.gameLoop(this.lastTime);
+      }
+
+      gameLoop(currentTime) {
+        if (!this.isRunning) return;
+
+        const deltaTime = (currentTime - this.lastTime) / 1000;
+        this.lastTime = currentTime;
+
+        // Update
+        this.sceneManager.update(deltaTime);
+
+        // Render
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.sceneManager.render(this.ctx);
+
+        requestAnimationFrame((time) => this.gameLoop(time));
+      }
+
+      start() {
+        this.init();
+      }
+    }
+
+    // Start game when page loads
+    window.addEventListener('load', () => {
+      const game = new Game();
+      game.start();
+    });
   </script>
 </body>
 </html>
