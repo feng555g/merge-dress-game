@@ -13,7 +13,7 @@
     {"item_id": "wood_1", "col": 2, "row": 3},
     {"item_id": "wood_2", "col": 4, "row": 3}
   ],
-  "goals": [{"item_id": "cloth_1", "count": 2}],
+  "goals": [{"item_id": "fabric_1", "count": 2}],
   "max_moves": 25,
   "star_thresholds": {"1": 1, "2": 20, "3": 15}
 }

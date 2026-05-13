@@ -13,7 +13,7 @@
     {"item_id": "flower_2", "col": 2, "row": 3},
     {"item_id": "flower_1", "col": 4, "row": 3}
   ],
-  "goals": [{"item_id": "wood_polish", "count": 1}, {"item_id": "gem_piece", "count": 2}],
+  "goals": [{"item_id": "polished_wood", "count": 1}, {"item_id": "gem_chip", "count": 2}],
   "max_moves": 35,
   "star_thresholds": {"1": 1, "2": 28, "3": 20}
 }

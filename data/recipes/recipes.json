@@ -3,70 +3,70 @@
     "id": "recipe_dress_casual",
     "name": "日常裙装配方",
     "result": "dress_casual",
-    "ingredients": [{"item_id": "cloth_1", "count": 3}, {"item_id": "cloth_2", "count": 1}],
+    "ingredients": [{"item_id": "fabric_1", "count": 3}, {"item_id": "fabric_2", "count": 1}],
     "chapter": 1
   },
   {
     "id": "recipe_table_old",
     "name": "旧木桌配方",
     "result": "table_old",
-    "ingredients": [{"item_id": "wood_plank", "count": 3}],
+    "ingredients": [{"item_id": "plank", "count": 3}],
     "chapter": 1
   },
   {
     "id": "recipe_chair_fabric",
     "name": "布艺椅配方",
     "result": "chair_fabric",
-    "ingredients": [{"item_id": "wood_plank", "count": 2}, {"item_id": "cloth_1", "count": 2}],
+    "ingredients": [{"item_id": "plank", "count": 2}, {"item_id": "fabric_1", "count": 2}],
     "chapter": 1
   },
   {
     "id": "recipe_coat_travel",
     "name": "出行外套配方",
     "result": "coat_travel",
-    "ingredients": [{"item_id": "cloth_2", "count": 3}, {"item_id": "cloth_3", "count": 1}],
+    "ingredients": [{"item_id": "fabric_2", "count": 3}, {"item_id": "silk_3", "count": 1}],
     "chapter": 2
   },
   {
     "id": "recipe_boots_leather",
     "name": "皮靴配方",
     "result": "boots_leather",
-    "ingredients": [{"item_id": "wood_polish", "count": 1}, {"item_id": "cloth_2", "count": 2}],
+    "ingredients": [{"item_id": "polished_wood", "count": 1}, {"item_id": "fabric_2", "count": 2}],
     "chapter": 2
   },
   {
     "id": "recipe_bookshelf",
     "name": "书架配方",
     "result": "bookshelf",
-    "ingredients": [{"item_id": "wood_plank", "count": 4}, {"item_id": "wood_polish", "count": 1}],
+    "ingredients": [{"item_id": "plank", "count": 4}, {"item_id": "polished_wood", "count": 1}],
     "chapter": 2
   },
   {
     "id": "recipe_lamp_desk",
     "name": "台灯配方",
     "result": "lamp_desk",
-    "ingredients": [{"item_id": "gem_piece", "count": 2}, {"item_id": "wood_plank", "count": 1}],
+    "ingredients": [{"item_id": "gem_chip", "count": 2}, {"item_id": "plank", "count": 1}],
     "chapter": 2
   },
   {
     "id": "recipe_dress_evening",
     "name": "晚礼服配方",
     "result": "dress_evening",
-    "ingredients": [{"item_id": "cloth_3", "count": 3}, {"item_id": "gem_cut", "count": 2}],
+    "ingredients": [{"item_id": "silk_3", "count": 3}, {"item_id": "cut_gem", "count": 2}],
     "chapter": 3
   },
   {
     "id": "recipe_dresser",
     "name": "梳妆台配方",
     "result": "dresser",
-    "ingredients": [{"item_id": "wood_polish", "count": 3}, {"item_id": "gem_piece", "count": 2}],
+    "ingredients": [{"item_id": "polished_wood", "count": 3}, {"item_id": "gem_chip", "count": 2}],
     "chapter": 3
   },
   {
     "id": "recipe_painting",
     "name": "壁画配方",
     "result": "painting",
-    "ingredients": [{"item_id": "gem_cut", "count": 1}, {"item_id": "cloth_3", "count": 2}],
+    "ingredients": [{"item_id": "cut_gem", "count": 1}, {"item_id": "silk_3", "count": 2}],
     "chapter": 3
   }
 ]

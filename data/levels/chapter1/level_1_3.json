@@ -12,7 +12,7 @@
     {"item_id": "leaf_1", "col": 2, "row": 3},
     {"item_id": "flower_1", "col": 4, "row": 3}
   ],
-  "goals": [{"item_id": "wood_plank", "count": 2}],
+  "goals": [{"item_id": "plank", "count": 2}],
   "max_moves": 30,
   "star_thresholds": {"1": 1, "2": 25, "3": 18}
 }
