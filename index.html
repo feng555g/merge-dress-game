@@ -270,6 +270,79 @@
         return this.items.filter(item => item.type === type);
       }
     }
+
+    class AssetLoader {
+      constructor() {
+        this.images = {};
+        this.totalAssets = 0;
+        this.loadedAssets = 0;
+      }
+
+      async loadAll(onProgress) {
+        const assetPaths = [
+          // Items (23 files)
+          'assets/items/leaf_1.png',
+          'assets/items/leaf_2.png',
+          'assets/items/leaf_3.png',
+          'assets/items/flower_1.png',
+          'assets/items/flower_2.png',
+          'assets/items/flower_3.png',
+          'assets/items/gem_1.png',
+          'assets/items/gem_2.png',
+          'assets/items/gem_3.png',
+          'assets/items/wood_1.png',
+          'assets/items/wood_2.png',
+          'assets/items/wood_3.png',
+          'assets/items/fabric_1.png',
+          'assets/items/fabric_2.png',
+          'assets/items/silk.png',
+          'assets/items/gem_shard.png',
+          'assets/items/cut_gem.png',
+          'assets/items/wood_plank.png',
+          'assets/items/polished_wood.png',
+          'assets/items/dress_casual.png',
+          'assets/items/coat_travel.png',
+          'assets/items/boots_leather.png',
+          'assets/items/dress_evening.png',
+          // UI (1 file)
+          'assets/ui/menu_bg.jpg'
+        ];
+
+        this.totalAssets = assetPaths.length;
+        this.loadedAssets = 0;
+
+        const loadPromises = assetPaths.map(path => {
+          return new Promise((resolve, reject) => {
+            const img = new Image();
+            img.onload = () => {
+              const key = path.split('/').pop().replace(/\.(png|jpg)$/, '');
+              this.images[key] = img;
+              this.loadedAssets++;
+              if (onProgress) {
+                onProgress(this.loadedAssets, this.totalAssets);
+              }
+              resolve();
+            };
+            img.onerror = () => {
+              console.warn(`Failed to load: ${path}`);
+              this.loadedAssets++;
+              if (onProgress) {
+                onProgress(this.loadedAssets, this.totalAssets);
+              }
+              resolve(); // Don't reject, continue loading
+            };
+            img.src = path;
+          });
+        });
+
+        await Promise.all(loadPromises);
+        return true;
+      }
+
+      getImage(key) {
+        return this.images[key] || null;
+      }
+    }
   </script>
 </body>
 </html>
