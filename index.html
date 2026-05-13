@@ -764,10 +764,13 @@
         let goalText = '目标: ';
         for (const goal of this.goals) {
           const item = this.game.dataLoader.getItem(goal.item_id);
-          const collected = this.collected[goal.item_id] || 0;
-          goalText += `${item.name} ${collected}/${goal.count}  `;
+          if (item) {
+            const collected = this.collected[goal.item_id] || 0;
+            goalText += `${item.name} ${collected}/${goal.count}  `;
+          }
         }
         ctx.fillText(goalText, 400, 70);
+        ctx.textBaseline = 'alphabetic';
 
         // Grid
         this.renderGrid(ctx);
@@ -801,6 +804,8 @@
             // Cell border
             ctx.strokeStyle = '#CCCCCC';
             ctx.lineWidth = 2;
+            ctx.beginPath();
+            ctx.roundRect(x + 2, y + 2, this.cellSize - 4, this.cellSize - 4, 8);
             ctx.stroke();
 
             // Item in cell
@@ -880,9 +885,11 @@
         let rewardY = 320;
         for (const goal of this.goals) {
           const item = this.game.dataLoader.getItem(goal.item_id);
-          const collected = this.collected[goal.item_id] || 0;
-          ctx.fillText(`${item.name} × ${collected}`, 400, rewardY);
-          rewardY += 30;
+          if (item) {
+            const collected = this.collected[goal.item_id] || 0;
+            ctx.fillText(`${item.name} × ${collected}`, 400, rewardY);
+            rewardY += 30;
+          }
         }
 
         // Return button
