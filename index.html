@@ -179,6 +179,42 @@
         this.completedLevels = data.completedLevels || [];
       }
     }
+
+    class SaveSystem {
+      constructor(gameState) {
+        this.gameState = gameState;
+        this.saveKey = 'mergeDressGame_save';
+      }
+
+      save() {
+        try {
+          const data = this.gameState.toJSON();
+          localStorage.setItem(this.saveKey, JSON.stringify(data));
+          return true;
+        } catch (e) {
+          console.error('Save failed:', e);
+          return false;
+        }
+      }
+
+      load() {
+        try {
+          const data = localStorage.getItem(this.saveKey);
+          if (data) {
+            this.gameState.fromJSON(JSON.parse(data));
+            return true;
+          }
+          return false;
+        } catch (e) {
+          console.error('Load failed:', e);
+          return false;
+        }
+      }
+
+      clear() {
+        localStorage.removeItem(this.saveKey);
+      }
+    }
   </script>
 </body>
 </html>
