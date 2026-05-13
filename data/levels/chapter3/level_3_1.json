@@ -16,6 +16,8 @@
     {"item_id": "gem_1", "col": 3, "row": 4}
   ],
   "goals": [{"item_id": "cut_gem", "count": 2}, {"item_id": "silk_3", "count": 1}],
+  "spawn_pool": ["gem_1", "gem_1", "flower_1", "flower_1", "wood_1"],
+  "rewards": [{"item_id": "cut_gem", "count": 3}, {"item_id": "silk_3", "count": 2}],
   "max_moves": 40,
   "star_thresholds": {"1": 1, "2": 32, "3": 25}
 }

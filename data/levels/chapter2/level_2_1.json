@@ -12,6 +12,8 @@
     {"item_id": "wood_1", "col": 2, "row": 4}
   ],
   "goals": [{"item_id": "gem_chip", "count": 1}, {"item_id": "fabric_2", "count": 1}],
+  "spawn_pool": ["gem_1", "gem_1", "flower_1", "flower_1", "wood_1"],
+  "rewards": [{"item_id": "gem_chip", "count": 2}, {"item_id": "fabric_2", "count": 2}],
   "max_moves": 30,
   "star_thresholds": {"1": 1, "2": 25, "3": 18}
 }

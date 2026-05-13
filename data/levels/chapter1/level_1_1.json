@@ -12,6 +12,8 @@
     {"item_id": "flower_1", "col": 2, "row": 4}
   ],
   "goals": [{"item_id": "leaf_3", "count": 1}],
+  "spawn_pool": ["leaf_1", "leaf_1", "wood_1", "flower_1"],
+  "rewards": [{"item_id": "fabric_1", "count": 1}],
   "max_moves": 20,
   "star_thresholds": {"1": 1, "2": 15, "3": 10}
 }
