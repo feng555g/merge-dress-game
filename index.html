@@ -904,9 +904,73 @@
       }
 
       update(deltaTime) {}
-      onMouseMove(x, y) {}
-      onMouseUp(x, y) {}
-      onMouseDown(x, y) {}
+
+      onMouseDown(x, y) {
+        if (this.animating || this.showVictory) return;
+
+        // Check back button
+        if (x >= 20 && x <= 120 && y >= 520 && y <= 570) {
+          const mainMenu = new MainMenu(this.game);
+          this.game.sceneManager.switchTo(mainMenu);
+          return;
+        }
+
+        // Check victory return button
+        if (this.showVictory) {
+          if (x >= 300 && x <= 500 && y >= 370 && y <= 420) {
+            const mainMenu = new MainMenu(this.game);
+            this.game.sceneManager.switchTo(mainMenu);
+          }
+          return;
+        }
+
+        // Check grid cell
+        const cellIndex = this.getCellAtPosition(x, y);
+        if (cellIndex >= 0 && this.grid[cellIndex]) {
+          this.draggedItem = this.grid[cellIndex];
+          this.draggedFrom = cellIndex;
+          this.dragX = x;
+          this.dragY = y;
+          this.isDragging = true;
+        }
+      }
+
+      onMouseMove(x, y) {
+        if (this.isDragging) {
+          this.dragX = x;
+          this.dragY = y;
+        }
+      }
+
+      onMouseUp(x, y) {
+        if (!this.isDragging) return;
+
+        const targetIndex = this.getCellAtPosition(x, y);
+
+        if (targetIndex >= 0 && targetIndex !== this.draggedFrom) {
+          const targetItem = this.grid[targetIndex];
+
+          if (!targetItem) {
+            // Move to empty cell
+            this.grid[targetIndex] = this.draggedItem;
+            const coords = this.getCellCoords(targetIndex);
+            this.grid[targetIndex].col = coords.col;
+            this.grid[targetIndex].row = coords.row;
+            this.grid[this.draggedFrom] = null;
+          } else if (targetItem.id === this.draggedItem.id) {
+            // Try merge
+            this.tryMerge(this.draggedFrom, targetIndex);
+          } else {
+            // Different items, return to original position
+            // (item stays in grid[draggedFrom])
+          }
+        }
+
+        // Reset drag state
+        this.isDragging = false;
+        this.draggedItem = null;
+        this.draggedFrom = -1;
+      }
     }
 
     // Start game when page loads
