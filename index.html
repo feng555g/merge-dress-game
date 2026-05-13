@@ -498,6 +498,10 @@
           // Hide loading screen
           document.getElementById('loadingScreen').style.display = 'none';
 
+          // Start with main menu
+          const mainMenu = new MainMenu(this);
+          this.sceneManager.switchTo(mainMenu);
+
           // Start game loop
           this.isRunning = true;
           this.lastTime = performance.now();
@@ -528,6 +532,151 @@
       start() {
         this.init();
       }
+    }
+
+    // ============================================================
+    // MAIN MENU SCENE
+    // ============================================================
+    class MainMenu extends Scene {
+      constructor(game) {
+        super(game);
+        this.buttons = [];
+      }
+
+      onEnter() {
+        this.buildButtons();
+      }
+
+      buildButtons() {
+        this.buttons = [];
+        const chapters = this.game.dataLoader.chapters;
+
+        let yOffset = 120;
+        for (const chapter of chapters) {
+          // Chapter unlocked?
+          const unlocked = this.game.gameState.isChapterUnlocked(chapter.id);
+
+          // Chapter button area
+          const chapterY = yOffset;
+          yOffset += 40;
+
+          // Level buttons
+          const levelButtons = [];
+          for (let i = 0; i < chapter.levels.length; i++) {
+            const levelId = chapter.levels[i];
+            const [chapterNum, levelNum] = levelId.split('_').map(Number);
+            const completed = this.game.gameState.isLevelCompleted(chapterNum, levelNum);
+
+            levelButtons.push({
+              x: 200 + i * 120,
+              y: yOffset,
+              width: 100,
+              height: 60,
+              chapter: chapterNum,
+              level: levelNum,
+              levelId: levelId,
+              unlocked: unlocked,
+              completed: completed,
+              label: `${chapterNum}-${levelNum}`
+            });
+          }
+
+          this.buttons.push({
+            type: 'chapter',
+            chapter: chapter,
+            chapterY: chapterY,
+            levelButtons: levelButtons
+          });
+
+          yOffset += 100;
+        }
+      }
+
+      render(ctx) {
+        // Background
+        ctx.fillStyle = '#F5F5F5';
+        ctx.fillRect(0, 0, 800, 600);
+
+        // Title
+        ctx.fillStyle = '#3E2723';
+        ctx.font = 'bold 48px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('合成养成游戏', 400, 80);
+
+        // Render chapters and levels
+        for (const btn of this.buttons) {
+          // Chapter title
+          ctx.fillStyle = '#3E2723';
+          ctx.font = 'bold 24px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'left';
+          ctx.fillText(`第${btn.chapter.id}章：${btn.chapter.name}`, 100, btn.chapterY);
+
+          // Level buttons
+          for (const levelBtn of btn.levelButtons) {
+            this.renderLevelButton(ctx, levelBtn);
+          }
+        }
+      }
+
+      renderLevelButton(ctx, btn) {
+        // Button background
+        if (btn.unlocked) {
+          ctx.fillStyle = btn.completed ? '#4CAF50' : '#2196F3';
+        } else {
+          ctx.fillStyle = '#BDBDBD';
+        }
+
+        ctx.beginPath();
+        ctx.roundRect(btn.x, btn.y, btn.width, btn.height, 8);
+        ctx.fill();
+
+        // Button border
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        // Button text
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 20px Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        if (btn.unlocked) {
+          ctx.fillText(btn.label, btn.x + btn.width / 2, btn.y + btn.height / 2 - 5);
+          if (btn.completed) {
+            ctx.font = '16px Arial';
+            ctx.fillText('✓', btn.x + btn.width / 2, btn.y + btn.height / 2 + 12);
+          }
+        } else {
+          ctx.fillText('🔒', btn.x + btn.width / 2, btn.y + btn.height / 2);
+        }
+      }
+
+      onMouseDown(x, y) {
+        // Check level button clicks
+        for (const btn of this.buttons) {
+          for (const levelBtn of btn.levelButtons) {
+            if (levelBtn.unlocked &&
+                x >= levelBtn.x && x <= levelBtn.x + levelBtn.width &&
+                y >= levelBtn.y && y <= levelBtn.y + levelBtn.height) {
+              this.startLevel(levelBtn.chapter, levelBtn.level, levelBtn.levelId);
+              return;
+            }
+          }
+        }
+      }
+
+      startLevel(chapter, level, levelId) {
+        const levelData = this.game.dataLoader.getLevel(levelId);
+        if (levelData) {
+          const mergeBoard = new MergeBoard(this.game, levelData, chapter, level);
+          this.game.sceneManager.switchTo(mergeBoard);
+        }
+      }
+
+      update(deltaTime) {}
+      onMouseMove(x, y) {}
+      onMouseUp(x, y) {}
     }
 
     // Start game when page loads
