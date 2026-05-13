@@ -474,33 +474,39 @@
       }
 
       async init() {
-        // Update loading screen
-        const updateLoading = (loaded, total) => {
-          const percent = Math.floor((loaded / total) * 100);
-          document.getElementById('loadingProgress').style.width = percent + '%';
-          document.getElementById('loadingText').textContent = `加载中... ${percent}%`;
-        };
+        try {
+          // Update loading screen
+          const updateLoading = (loaded, total) => {
+            const percent = Math.floor((loaded / total) * 100);
+            document.getElementById('loadingProgress').style.width = percent + '%';
+            document.getElementById('loadingText').textContent = `加载中... ${percent}%`;
+          };
 
-        // Load data
-        updateLoading(0, 2);
-        await this.dataLoader.loadAll();
-        updateLoading(1, 2);
+          // Load data
+          updateLoading(0, 2);
+          await this.dataLoader.loadAll();
+          updateLoading(1, 2);
 
-        // Load assets
-        await this.assetLoader.loadAll((loaded, total) => {
-          updateLoading(1 + (loaded / total), 2);
-        });
+          // Load assets
+          await this.assetLoader.loadAll((loaded, total) => {
+            updateLoading(1 + (loaded / total), 2);
+          });
 
-        // Load save
-        this.saveSystem.load();
+          // Load save
+          this.saveSystem.load();
 
-        // Hide loading screen
-        document.getElementById('loadingScreen').style.display = 'none';
+          // Hide loading screen
+          document.getElementById('loadingScreen').style.display = 'none';
 
-        // Start game loop
-        this.isRunning = true;
-        this.lastTime = performance.now();
-        this.gameLoop(this.lastTime);
+          // Start game loop
+          this.isRunning = true;
+          this.lastTime = performance.now();
+          this.gameLoop(this.lastTime);
+        } catch (error) {
+          console.error('Game initialization failed:', error);
+          document.getElementById('loadingText').textContent = '加载失败，请刷新页面重试';
+          document.getElementById('loadingText').style.color = '#ff6b6b';
+        }
       }
 
       gameLoop(currentTime) {
@@ -527,6 +533,7 @@
     // Start game when page loads
     window.addEventListener('load', () => {
       const game = new Game();
+      window.game = game; // Expose for debugging
       game.start();
     });
   </script>
