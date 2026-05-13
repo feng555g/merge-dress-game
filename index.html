@@ -1065,7 +1065,8 @@
       }
 
       trySpawnItem() {
-        if (Math.random() > 0.3) {
+        // 70% chance to spawn new item after merge
+        if (Math.random() > 0.7) {
           return;
         }
 
