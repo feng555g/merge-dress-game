@@ -1031,10 +1031,13 @@
           }
         }
 
-        // Check if merged item is tier 3 and has drops — drops are immediate
+        // Check if merged item is tier 3 and has drops
         if (mergedItemData && mergedItemData.tier === 3 && mergedItemData.drops) {
           for (const drop of mergedItemData.drops) {
+            // Always add to inventory
             this.game.gameState.addItem(drop, 1);
+
+            // Only count toward goal if it's in the goal list
             for (const goal of this.goals) {
               if (goal.item_id === drop) {
                 this.collected[drop] = (this.collected[drop] || 0) + 1;
