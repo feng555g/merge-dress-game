@@ -679,6 +679,229 @@
       onMouseUp(x, y) {}
     }
 
+    class MergeBoard extends Scene {
+      constructor(game, levelData, chapter, level) {
+        super(game);
+        this.levelData = levelData;
+        this.chapter = chapter;
+        this.level = level;
+
+        this.gridCols = levelData.grid_size.cols;
+        this.gridRows = levelData.grid_size.rows;
+        this.cellSize = 70;
+        this.gridX = (800 - this.gridCols * this.cellSize) / 2;
+        this.gridY = 120;
+
+        this.grid = Array(this.gridCols * this.gridRows).fill(null);
+        this.goals = levelData.goals;
+        this.collected = {};
+
+        this.draggedItem = null;
+        this.draggedFrom = -1;
+        this.dragX = 0;
+        this.dragY = 0;
+        this.isDragging = false;
+
+        this.animating = false;
+        this.showVictory = false;
+      }
+
+      onEnter() {
+        this.initializeGrid();
+      }
+
+      initializeGrid() {
+        // Place initial items
+        for (const item of this.levelData.initial_items) {
+          const index = item.row * this.gridCols + item.col;
+          this.grid[index] = {
+            id: item.item_id,
+            col: item.col,
+            row: item.row
+          };
+        }
+      }
+
+      getCellIndex(col, row) {
+        if (col < 0 || col >= this.gridCols || row < 0 || row >= this.gridRows) {
+          return -1;
+        }
+        return row * this.gridCols + col;
+      }
+
+      getCellCoords(index) {
+        const col = index % this.gridCols;
+        const row = Math.floor(index / this.gridCols);
+        return { col, row };
+      }
+
+      getCellCenter(col, row) {
+        return {
+          x: this.gridX + col * this.cellSize + this.cellSize / 2,
+          y: this.gridY + row * this.cellSize + this.cellSize / 2
+        };
+      }
+
+      getCellAtPosition(x, y) {
+        const col = Math.floor((x - this.gridX) / this.cellSize);
+        const row = Math.floor((y - this.gridY) / this.cellSize);
+        return this.getCellIndex(col, row);
+      }
+
+      render(ctx) {
+        // Background
+        ctx.fillStyle = '#F5F5F5';
+        ctx.fillRect(0, 0, 800, 600);
+
+        // Title
+        ctx.fillStyle = '#3E2723';
+        ctx.font = 'bold 24px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`第${this.chapter}章 - 关卡${this.level}`, 400, 40);
+
+        // Goals
+        ctx.font = '18px "Microsoft YaHei", Arial';
+        let goalText = '目标: ';
+        for (const goal of this.goals) {
+          const item = this.game.dataLoader.getItem(goal.item_id);
+          const collected = this.collected[goal.item_id] || 0;
+          goalText += `${item.name} ${collected}/${goal.count}  `;
+        }
+        ctx.fillText(goalText, 400, 70);
+
+        // Grid
+        this.renderGrid(ctx);
+
+        // Dragged item
+        if (this.isDragging && this.draggedItem) {
+          this.renderDraggedItem(ctx);
+        }
+
+        // Victory screen
+        if (this.showVictory) {
+          this.renderVictory(ctx);
+        }
+
+        // Back button
+        this.renderBackButton(ctx);
+      }
+
+      renderGrid(ctx) {
+        for (let row = 0; row < this.gridRows; row++) {
+          for (let col = 0; col < this.gridCols; col++) {
+            const x = this.gridX + col * this.cellSize;
+            const y = this.gridY + row * this.cellSize;
+
+            // Cell background
+            ctx.fillStyle = '#FFFFFF';
+            ctx.beginPath();
+            ctx.roundRect(x + 2, y + 2, this.cellSize - 4, this.cellSize - 4, 8);
+            ctx.fill();
+
+            // Cell border
+            ctx.strokeStyle = '#CCCCCC';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Item in cell
+            const index = this.getCellIndex(col, row);
+            const item = this.grid[index];
+            if (item && !(this.isDragging && index === this.draggedFrom)) {
+              this.renderItem(ctx, item.id, x + this.cellSize / 2, y + this.cellSize / 2, 1.0);
+            }
+          }
+        }
+      }
+
+      renderItem(ctx, itemId, x, y, alpha) {
+        const itemData = this.game.dataLoader.getItem(itemId);
+        if (!itemData) return;
+
+        const img = this.game.assetLoader.getImage(itemId);
+        if (img) {
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          const size = this.cellSize * 0.8;
+          ctx.drawImage(img, x - size / 2, y - size / 2, size, size);
+          ctx.restore();
+        } else {
+          // Fallback: colored circle
+          ctx.save();
+          ctx.globalAlpha = alpha;
+          ctx.fillStyle = itemData.color || '#999999';
+          ctx.beginPath();
+          ctx.arc(x, y, this.cellSize * 0.3, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.restore();
+        }
+      }
+
+      renderDraggedItem(ctx) {
+        this.renderItem(ctx, this.draggedItem.id, this.dragX, this.dragY, 0.7);
+      }
+
+      renderBackButton(ctx) {
+        ctx.fillStyle = '#757575';
+        ctx.beginPath();
+        ctx.roundRect(20, 520, 100, 50, 8);
+        ctx.fill();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 18px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('返回', 70, 545);
+      }
+
+      renderVictory(ctx) {
+        // Semi-transparent overlay
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.fillRect(0, 0, 800, 600);
+
+        // Victory panel
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.roundRect(200, 150, 400, 300, 16);
+        ctx.fill();
+
+        // Title
+        ctx.fillStyle = '#4CAF50';
+        ctx.font = 'bold 36px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('关卡完成！', 400, 220);
+
+        // Rewards
+        ctx.fillStyle = '#3E2723';
+        ctx.font = '20px "Microsoft YaHei", Arial';
+        ctx.fillText('获得奖励：', 400, 280);
+
+        // Show collected items
+        ctx.font = '18px "Microsoft YaHei", Arial';
+        let rewardY = 320;
+        for (const goal of this.goals) {
+          const item = this.game.dataLoader.getItem(goal.item_id);
+          const collected = this.collected[goal.item_id] || 0;
+          ctx.fillText(`${item.name} × ${collected}`, 400, rewardY);
+          rewardY += 30;
+        }
+
+        // Return button
+        ctx.fillStyle = '#4CAF50';
+        ctx.beginPath();
+        ctx.roundRect(300, 370, 200, 50, 8);
+        ctx.fill();
+
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 20px "Microsoft YaHei", Arial';
+        ctx.fillText('返回主菜单', 400, 395);
+      }
+
+      update(deltaTime) {}
+      onMouseMove(x, y) {}
+      onMouseUp(x, y) {}
+      onMouseDown(x, y) {}
+    }
+
     // Start game when page loads
     window.addEventListener('load', () => {
       const game = new Game();
