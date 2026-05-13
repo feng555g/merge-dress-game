@@ -215,6 +215,59 @@
         localStorage.removeItem(this.saveKey);
       }
     }
+
+    class DataLoader {
+      constructor() {
+        this.items = [];
+        this.chapters = [];
+        this.levels = {};
+      }
+
+      async loadAll() {
+        try {
+          // Load items
+          const itemsRes = await fetch('data/items/items.json');
+          this.items = await itemsRes.json();
+
+          // Load chapters
+          const chaptersRes = await fetch('data/chapters/chapters.json');
+          this.chapters = await chaptersRes.json();
+
+          // Load all levels
+          for (let chapter = 1; chapter <= 3; chapter++) {
+            const chapterData = this.chapters.find(c => c.id === chapter);
+            if (!chapterData) continue;
+
+            for (const levelId of chapterData.levels) {
+              const levelRes = await fetch(`data/levels/chapter${chapter}/level_${levelId}.json`);
+              const levelData = await levelRes.json();
+              this.levels[levelId] = levelData;
+            }
+          }
+
+          return true;
+        } catch (e) {
+          console.error('Data loading failed:', e);
+          return false;
+        }
+      }
+
+      getItem(itemId) {
+        return this.items.find(item => item.id === itemId);
+      }
+
+      getChapter(chapterId) {
+        return this.chapters.find(chapter => chapter.id === chapterId);
+      }
+
+      getLevel(levelId) {
+        return this.levels[levelId];
+      }
+
+      getItemsByType(type) {
+        return this.items.filter(item => item.type === type);
+      }
+    }
   </script>
 </body>
 </html>
