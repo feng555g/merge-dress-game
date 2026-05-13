@@ -143,11 +143,24 @@
 
       isChapterUnlocked(chapter) {
         if (chapter === 1) return true;
+
+        // Check if previous chapter is complete by looking at completedLevels
+        // A chapter is complete when we have at least one level from the next chapter
+        // OR when we check the actual completed levels for the previous chapter
         const prevChapter = chapter - 1;
-        const prevChapterLevels = [1, 2, 3];
-        return prevChapterLevels.every(level =>
-          this.isLevelCompleted(prevChapter, level)
-        );
+
+        // Count how many levels from previous chapter are completed
+        const prevChapterCompletedCount = this.completedLevels.filter(key => {
+          const [ch] = key.split('-').map(Number);
+          return ch === prevChapter;
+        }).length;
+
+        // For now, assume chapters have varying levels: Ch1=3, Ch2=2, Ch3=1
+        // This is a temporary solution until DataLoader is available
+        const levelCounts = {1: 3, 2: 2, 3: 1};
+        const requiredLevels = levelCounts[prevChapter] || 3;
+
+        return prevChapterCompletedCount >= requiredLevels;
       }
 
       toJSON() {
