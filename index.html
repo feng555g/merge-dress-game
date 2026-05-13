@@ -961,6 +961,7 @@
         if (!this.isDragging) return;
 
         const targetIndex = this.getCellAtPosition(x, y);
+        let actionPerformed = false;
 
         if (targetIndex >= 0 && targetIndex !== this.draggedFrom) {
           const targetItem = this.grid[targetIndex];
@@ -972,13 +973,20 @@
             this.grid[targetIndex].col = coords.col;
             this.grid[targetIndex].row = coords.row;
             this.grid[this.draggedFrom] = null;
+            actionPerformed = true;
           } else if (targetItem.id === this.draggedItem.id) {
             // Try merge
             this.tryMerge(this.draggedFrom, targetIndex);
+            actionPerformed = true;
           } else {
             // Different items, return to original position
             // (item stays in grid[draggedFrom])
           }
+        }
+
+        // Try to spawn new item after any successful action
+        if (actionPerformed) {
+          this.trySpawnItem();
         }
 
         // Reset drag state
@@ -1030,9 +1038,6 @@
 
         // Check victory condition
         this.checkVictory();
-
-        // Try to spawn new item (30% chance)
-        this.trySpawnItem();
       }
 
       checkVictory() {
