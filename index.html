@@ -103,7 +103,69 @@
   </div>
 
   <script>
-    // Game code will go here
+    class GameState {
+      constructor() {
+        this.currentChapter = 1;
+        this.currentLevel = 1;
+        this.inventory = {};
+        this.completedLevels = [];
+      }
+
+      addItem(itemId, count = 1) {
+        this.inventory[itemId] = (this.inventory[itemId] || 0) + count;
+      }
+
+      removeItem(itemId, count = 1) {
+        const current = this.inventory[itemId] || 0;
+        if (current < count) return false;
+        this.inventory[itemId] = current - count;
+        if (this.inventory[itemId] === 0) {
+          delete this.inventory[itemId];
+        }
+        return true;
+      }
+
+      hasItem(itemId, count = 1) {
+        return (this.inventory[itemId] || 0) >= count;
+      }
+
+      completeLevel(chapter, level) {
+        const levelKey = `${chapter}-${level}`;
+        if (!this.completedLevels.includes(levelKey)) {
+          this.completedLevels.push(levelKey);
+        }
+      }
+
+      isLevelCompleted(chapter, level) {
+        const levelKey = `${chapter}-${level}`;
+        return this.completedLevels.includes(levelKey);
+      }
+
+      isChapterUnlocked(chapter) {
+        if (chapter === 1) return true;
+        const prevChapter = chapter - 1;
+        const prevChapterLevels = [1, 2, 3];
+        return prevChapterLevels.every(level =>
+          this.isLevelCompleted(prevChapter, level)
+        );
+      }
+
+      toJSON() {
+        return {
+          currentChapter: this.currentChapter,
+          currentLevel: this.currentLevel,
+          inventory: this.inventory,
+          completedLevels: this.completedLevels
+        };
+      }
+
+      fromJSON(data) {
+        this.currentChapter = data.currentChapter || 1;
+        this.currentLevel = data.currentLevel || 1;
+        this.inventory = data.inventory || {};
+        this.completedLevels = data.completedLevels || [];
+      }
+    }
   </script>
 </body>
 </html>
