@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ch1_intro",
+    "trigger": "chapter_start",
+    "lines": [
+      {"speaker": "旁白", "text": "一间破旧的小屋，清晨的阳光透过裂缝照进来。"},
+      {"speaker": "女主", "text": "又是新的一天……"},
+      {"speaker": "旁白", "text": "她不记得自己从哪里来，只知道这里是她唯一的家。"}
+    ]
+  },
+  {
+    "id": "ch1_complete",
+    "trigger": "chapter_complete",
+    "lines": [
+      {"speaker": "女主", "text": "终于，小屋有了一点家的样子。"},
+      {"speaker": "旁白", "text": "就在这时，门缝里滑进来一封信……"},
+      {"speaker": "女主", "text": "这是……谁寄来的？"}
+    ]
+  }
+]

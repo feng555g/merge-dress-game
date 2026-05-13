@@ -1,0 +1,18 @@
+{
+  "id": "1_3",
+  "chapter": 1,
+  "name": "木材加工",
+  "grid_size": {"cols": 5, "rows": 7},
+  "initial_items": [
+    {"item_id": "wood_1", "col": 0, "row": 0},
+    {"item_id": "wood_1", "col": 1, "row": 0},
+    {"item_id": "wood_1", "col": 2, "row": 0},
+    {"item_id": "wood_2", "col": 3, "row": 1},
+    {"item_id": "leaf_1", "col": 0, "row": 3},
+    {"item_id": "leaf_1", "col": 2, "row": 3},
+    {"item_id": "flower_1", "col": 4, "row": 3}
+  ],
+  "goals": [{"item_id": "wood_plank", "count": 2}],
+  "max_moves": 30,
+  "star_thresholds": {"1": 1, "2": 25, "3": 18}
+}

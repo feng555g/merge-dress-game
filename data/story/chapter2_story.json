@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ch2_intro",
+    "trigger": "chapter_start",
+    "lines": [
+      {"speaker": "旁白", "text": "那封信没有署名，只有一行字：'你的过去，藏在镇子的东边。'"},
+      {"speaker": "女主", "text": "我的过去……"},
+      {"speaker": "旁白", "text": "她决定出门，去寻找答案。"}
+    ]
+  },
+  {
+    "id": "ch2_complete",
+    "trigger": "chapter_complete",
+    "lines": [
+      {"speaker": "女主", "text": "书架上的旧书……这些都是我的？"},
+      {"speaker": "旁白", "text": "书页间夹着一张褪色的照片，照片里有一个她不认识的女人。"},
+      {"speaker": "女主", "text": "这个人……是谁？"}
+    ]
+  }
+]

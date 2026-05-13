@@ -1,0 +1,36 @@
+[
+  {
+    "id": 1,
+    "name": "新的开始",
+    "unlock_condition": null,
+    "levels": ["1_1", "1_2", "1_3"],
+    "goals": [
+      {"id": "equip_dress_casual", "type": "equip", "item_id": "dress_casual", "description": "合成并穿上日常裙装"},
+      {"id": "place_table_old", "type": "place_furniture", "item_id": "table_old", "description": "放置旧木桌"},
+      {"id": "place_chair_fabric", "type": "place_furniture", "item_id": "chair_fabric", "description": "放置布艺椅"}
+    ]
+  },
+  {
+    "id": 2,
+    "name": "神秘来信",
+    "unlock_condition": {"chapter_complete": 1},
+    "levels": ["2_1", "2_2"],
+    "goals": [
+      {"id": "equip_coat_travel", "type": "equip", "item_id": "coat_travel", "description": "合成并穿上出行外套"},
+      {"id": "equip_boots_leather", "type": "equip", "item_id": "boots_leather", "description": "合成并穿上皮靴"},
+      {"id": "place_bookshelf", "type": "place_furniture", "item_id": "bookshelf", "description": "放置书架"},
+      {"id": "place_lamp_desk", "type": "place_furniture", "item_id": "lamp_desk", "description": "放置台灯"}
+    ]
+  },
+  {
+    "id": 3,
+    "name": "隐藏的秘密",
+    "unlock_condition": {"chapter_complete": 2},
+    "levels": ["3_1"],
+    "goals": [
+      {"id": "equip_dress_evening", "type": "equip", "item_id": "dress_evening", "description": "合成并穿上晚礼服"},
+      {"id": "place_dresser", "type": "place_furniture", "item_id": "dresser", "description": "放置梳妆台"},
+      {"id": "place_painting", "type": "place_furniture", "item_id": "painting", "description": "放置壁画"}
+    ]
+  }
+]
