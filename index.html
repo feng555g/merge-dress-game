@@ -971,6 +971,115 @@
         this.draggedItem = null;
         this.draggedFrom = -1;
       }
+
+      tryMerge(fromIndex, toIndex) {
+        const item1 = this.grid[fromIndex];
+        const item2 = this.grid[toIndex];
+
+        if (!item1 || !item2 || item1.id !== item2.id) {
+          return;
+        }
+
+        const itemData = this.game.dataLoader.getItem(item1.id);
+        if (!itemData || !itemData.merge_into) {
+          return;
+        }
+
+        // Remove both items
+        this.grid[fromIndex] = null;
+        this.grid[toIndex] = null;
+
+        // Create new merged item at target position
+        const coords = this.getCellCoords(toIndex);
+        this.grid[toIndex] = {
+          id: itemData.merge_into,
+          col: coords.col,
+          row: coords.row
+        };
+
+        // Check if merged item is tier 3 and has drops
+        const mergedItemData = this.game.dataLoader.getItem(itemData.merge_into);
+        if (mergedItemData && mergedItemData.tier === 3 && mergedItemData.drops) {
+          for (const drop of mergedItemData.drops) {
+            // Add to inventory
+            this.game.gameState.addItem(drop, 1);
+
+            // Check if it's a goal item
+            for (const goal of this.goals) {
+              if (goal.item_id === drop) {
+                this.collected[drop] = (this.collected[drop] || 0) + 1;
+              }
+            }
+          }
+        }
+
+        // Check victory condition
+        this.checkVictory();
+
+        // Try to spawn new item (30% chance)
+        this.trySpawnItem();
+      }
+
+      checkVictory() {
+        let allComplete = true;
+        for (const goal of this.goals) {
+          const collected = this.collected[goal.item_id] || 0;
+          if (collected < goal.count) {
+            allComplete = false;
+            break;
+          }
+        }
+
+        if (allComplete) {
+          // Mark level as completed
+          this.game.gameState.completeLevel(this.chapter, this.level);
+
+          // Add rewards to inventory
+          if (this.levelData.rewards) {
+            for (const reward of this.levelData.rewards) {
+              this.game.gameState.addItem(reward.item_id, reward.count);
+            }
+          }
+
+          // Save game
+          this.game.saveSystem.save(this.game.gameState);
+
+          // Show victory screen
+          this.showVictory = true;
+        }
+      }
+
+      trySpawnItem() {
+        if (Math.random() > 0.3) {
+          return;
+        }
+
+        // Find empty cells
+        const emptyCells = [];
+        for (let i = 0; i < this.grid.length; i++) {
+          if (!this.grid[i]) {
+            emptyCells.push(i);
+          }
+        }
+
+        if (emptyCells.length === 0) {
+          return;
+        }
+
+        // Pick random empty cell
+        const randomIndex = emptyCells[Math.floor(Math.random() * emptyCells.length)];
+
+        // Pick random item from spawn pool
+        if (this.levelData.spawn_pool && this.levelData.spawn_pool.length > 0) {
+          const randomItem = this.levelData.spawn_pool[Math.floor(Math.random() * this.levelData.spawn_pool.length)];
+          const coords = this.getCellCoords(randomIndex);
+          this.grid[randomIndex] = {
+            id: randomItem,
+            col: coords.col,
+            row: coords.row
+          };
+        }
+      }
     }
 
     // Start game when page loads
