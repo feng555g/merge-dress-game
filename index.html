@@ -343,6 +343,67 @@
         return this.images[key] || null;
       }
     }
+
+    class Scene {
+      constructor(game) {
+        this.game = game;
+      }
+
+      onEnter() {}
+      onExit() {}
+      update(deltaTime) {}
+      render(ctx) {}
+      onMouseDown(x, y) {}
+      onMouseMove(x, y) {}
+      onMouseUp(x, y) {}
+    }
+
+    class SceneManager {
+      constructor(game) {
+        this.game = game;
+        this.currentScene = null;
+      }
+
+      switchTo(scene) {
+        if (this.currentScene) {
+          this.currentScene.onExit();
+        }
+        this.currentScene = scene;
+        if (this.currentScene) {
+          this.currentScene.onEnter();
+        }
+      }
+
+      update(deltaTime) {
+        if (this.currentScene) {
+          this.currentScene.update(deltaTime);
+        }
+      }
+
+      render(ctx) {
+        if (this.currentScene) {
+          this.currentScene.render(ctx);
+        }
+      }
+
+      handleMouseDown(x, y) {
+        if (this.currentScene) {
+          this.currentScene.onMouseDown(x, y);
+        }
+      }
+
+      handleMouseMove(x, y) {
+        if (this.currentScene) {
+          this.currentScene.onMouseMove(x, y);
+        }
+      }
+
+      handleMouseUp(x, y) {
+        if (this.currentScene) {
+          this.currentScene.onMouseUp(x, y);
+        }
+      }
+    }
   </script>
 </body>
 </html>
