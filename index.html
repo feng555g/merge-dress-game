@@ -921,21 +921,21 @@
       update(deltaTime) {}
 
       onMouseDown(x, y) {
-        if (this.animating || this.showVictory) return;
-
-        // Check back button
-        if (x >= 20 && x <= 120 && y >= 520 && y <= 570) {
-          const mainMenu = new MainMenu(this.game);
-          this.game.sceneManager.switchTo(mainMenu);
-          return;
-        }
-
-        // Check victory return button
+        // Check victory return button first
         if (this.showVictory) {
           if (x >= 300 && x <= 500 && y >= 370 && y <= 420) {
             const mainMenu = new MainMenu(this.game);
             this.game.sceneManager.switchTo(mainMenu);
           }
+          return;
+        }
+
+        if (this.animating) return;
+
+        // Check back button
+        if (x >= 20 && x <= 120 && y >= 520 && y <= 570) {
+          const mainMenu = new MainMenu(this.game);
+          this.game.sceneManager.switchTo(mainMenu);
           return;
         }
 
@@ -1014,14 +1014,22 @@
 
         // Create new merged item at target position
         const coords = this.getCellCoords(toIndex);
+        const mergedItemId = itemData.merge_into;
         this.grid[toIndex] = {
-          id: itemData.merge_into,
+          id: mergedItemId,
           col: coords.col,
           row: coords.row
         };
 
+        // Check if merged item itself is a goal
+        for (const goal of this.goals) {
+          if (goal.item_id === mergedItemId) {
+            this.collected[mergedItemId] = (this.collected[mergedItemId] || 0) + 1;
+          }
+        }
+
         // Check if merged item is tier 3 and has drops
-        const mergedItemData = this.game.dataLoader.getItem(itemData.merge_into);
+        const mergedItemData = this.game.dataLoader.getItem(mergedItemId);
         if (mergedItemData && mergedItemData.tier === 3 && mergedItemData.drops) {
           for (const drop of mergedItemData.drops) {
             // Add to inventory
