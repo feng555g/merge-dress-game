@@ -1013,15 +1013,38 @@
         }
 
         const itemData = this.game.dataLoader.getItem(item1.id);
-        if (!itemData || !itemData.merge_into) {
+        if (!itemData) {
           return;
         }
 
-        // Remove both items
+        // Tier 3 merge: both items consumed, drops are produced
+        if (itemData.tier === 3) {
+          if (!itemData.drops) return;
+
+          this.grid[fromIndex] = null;
+          this.grid[toIndex] = null;
+
+          for (const drop of itemData.drops) {
+            this.game.gameState.addItem(drop, 1);
+            for (const goal of this.goals) {
+              if (goal.item_id === drop) {
+                this.collected[drop] = (this.collected[drop] || 0) + 1;
+              }
+            }
+          }
+
+          this.checkVictory();
+          return;
+        }
+
+        // Normal merge (tier 1 or 2): must have a merge_into target
+        if (!itemData.merge_into) {
+          return;
+        }
+
         this.grid[fromIndex] = null;
         this.grid[toIndex] = null;
 
-        // Create new merged item at target position
         const coords = this.getCellCoords(toIndex);
         const mergedItemId = itemData.merge_into;
         this.grid[toIndex] = {
@@ -1030,32 +1053,13 @@
           row: coords.row
         };
 
-        // Get merged item data
-        const mergedItemData = this.game.dataLoader.getItem(mergedItemId);
-
-        // Check if merged item itself is a goal
+        // Check if merged item itself is a goal (e.g. level 1 goal is leaf_3)
         for (const goal of this.goals) {
           if (goal.item_id === mergedItemId) {
             this.collected[mergedItemId] = (this.collected[mergedItemId] || 0) + 1;
           }
         }
 
-        // Check if merged item is tier 3 and has drops
-        if (mergedItemData && mergedItemData.tier === 3 && mergedItemData.drops) {
-          for (const drop of mergedItemData.drops) {
-            // Always add to inventory
-            this.game.gameState.addItem(drop, 1);
-
-            // Only count toward goal if it's in the goal list
-            for (const goal of this.goals) {
-              if (goal.item_id === drop) {
-                this.collected[drop] = (this.collected[drop] || 0) + 1;
-              }
-            }
-          }
-        }
-
-        // Check victory condition
         this.checkVictory();
       }
 
