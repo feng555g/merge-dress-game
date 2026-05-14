@@ -715,22 +715,23 @@
           }
         }
 
-        // Action buttons row at bottom
+        // Action buttons row at bottom (4 buttons, w=155 each)
         const actionBtns = [
-          { label: '配方工坊', x: 110, color: '#8B6F47' },
-          { label: '装扮', x: 310, color: '#C2185B' },
-          { label: '装修', x: 510, color: '#1565C0' }
+          { label: '配方工坊', x: 50, color: '#8B6F47' },
+          { label: '装扮', x: 225, color: '#C2185B' },
+          { label: '装修', x: 400, color: '#1565C0' },
+          { label: '故事', x: 575, color: '#6A1B9A' }
         ];
         ctx.textBaseline = 'middle';
         for (const ab of actionBtns) {
           ctx.fillStyle = ab.color;
           ctx.beginPath();
-          ctx.roundRect(ab.x, 525, 180, 50, 10);
+          ctx.roundRect(ab.x, 525, 155, 50, 10);
           ctx.fill();
           ctx.fillStyle = '#FFFFFF';
-          ctx.font = 'bold 18px "Microsoft YaHei", Arial';
+          ctx.font = 'bold 17px "Microsoft YaHei", Arial';
           ctx.textAlign = 'center';
-          ctx.fillText(ab.label, ab.x + 90, 550);
+          ctx.fillText(ab.label, ab.x + 77, 550);
         }
         ctx.textBaseline = 'alphabetic';
       }
@@ -782,18 +783,26 @@
           }
         }
 
-        // Action buttons
+        // Action buttons (x=50,225,400,575 w=155)
         if (y >= 525 && y <= 575) {
-          if (x >= 110 && x <= 290) {
+          if (x >= 50 && x <= 205) {
             this.game.sceneManager.switchTo(new Workshop(this.game));
             return;
           }
-          if (x >= 310 && x <= 490) {
+          if (x >= 225 && x <= 380) {
             this.game.sceneManager.switchTo(new DressUp(this.game));
             return;
           }
-          if (x >= 510 && x <= 690) {
+          if (x >= 400 && x <= 555) {
             this.game.sceneManager.switchTo(new Room(this.game));
+            return;
+          }
+          if (x >= 575 && x <= 730) {
+            const storyData = this.game.dataLoader.getStory(1, 'chapter_start');
+            const scene = new Story(this.game, storyData, () => {
+              this.game.sceneManager.switchTo(new MainMenu(this.game));
+            });
+            this.game.sceneManager.switchTo(scene);
             return;
           }
         }
