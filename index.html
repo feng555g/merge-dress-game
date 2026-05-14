@@ -608,8 +608,17 @@
       }
 
       render(ctx) {
-        // Background
-        ctx.fillStyle = '#F5F5F5';
+        // Background image
+        const bg = this.game.assetLoader.getImage('main_bg');
+        if (bg) {
+          ctx.drawImage(bg, 0, 0, 800, 600);
+        } else {
+          ctx.fillStyle = '#F5F5F5';
+          ctx.fillRect(0, 0, 800, 600);
+        }
+
+        // Semi-transparent overlay for readability
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.6)';
         ctx.fillRect(0, 0, 800, 600);
 
         // Title
