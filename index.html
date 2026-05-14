@@ -124,6 +124,9 @@
         this.currentLevel = 1;
         this.inventory = {};
         this.completedLevels = [];
+        this.outfit = {};
+        this.placedFurniture = {};
+        this.completedGoals = [];
       }
 
       addItem(itemId, count = 1) {
@@ -178,12 +181,33 @@
         return prevChapterCompletedCount >= requiredLevels;
       }
 
+      equip(slot, itemId) {
+        this.outfit[slot] = itemId;
+      }
+
+      unequip(slot) {
+        delete this.outfit[slot];
+      }
+
+      completeGoal(goalId) {
+        if (!this.completedGoals.includes(goalId)) {
+          this.completedGoals.push(goalId);
+        }
+      }
+
+      isGoalCompleted(goalId) {
+        return this.completedGoals.includes(goalId);
+      }
+
       toJSON() {
         return {
           currentChapter: this.currentChapter,
           currentLevel: this.currentLevel,
           inventory: this.inventory,
-          completedLevels: this.completedLevels
+          completedLevels: this.completedLevels,
+          outfit: this.outfit,
+          placedFurniture: this.placedFurniture,
+          completedGoals: this.completedGoals
         };
       }
 
@@ -192,6 +216,9 @@
         this.currentLevel = data.currentLevel || 1;
         this.inventory = data.inventory || {};
         this.completedLevels = data.completedLevels || [];
+        this.outfit = data.outfit || {};
+        this.placedFurniture = data.placedFurniture || {};
+        this.completedGoals = data.completedGoals || [];
       }
     }
 
@@ -236,6 +263,8 @@
         this.items = [];
         this.chapters = [];
         this.levels = {};
+        this.recipes = [];
+        this.stories = {};
       }
 
       async loadAll() {
@@ -253,13 +282,28 @@
           // Load all levels
           for (const chapterData of this.chapters) {
             const chapter = chapterData.id;
-
             for (const levelId of chapterData.levels) {
               const levelRes = await fetch(`data/levels/chapter${chapter}/level_${levelId}.json`);
               if (!levelRes.ok) throw new Error(`Failed to load level ${levelId}: ${levelRes.status}`);
               const levelData = await levelRes.json();
               this.levels[levelId] = levelData;
             }
+          }
+
+          // Load recipes
+          const recipesRes = await fetch('data/recipes/recipes.json');
+          if (recipesRes.ok) {
+            this.recipes = await recipesRes.json();
+          }
+
+          // Load stories (optional - don't fail if missing)
+          for (let ch = 1; ch <= 3; ch++) {
+            try {
+              const storyRes = await fetch(`data/story/chapter${ch}_story.json`);
+              if (storyRes.ok) {
+                this.stories[ch] = await storyRes.json();
+              }
+            } catch (e) { /* story files are optional */ }
           }
 
           return true;
@@ -283,6 +327,15 @@
 
       getItemsByType(type) {
         return this.items.filter(item => item.type === type);
+      }
+
+      getRecipe(recipeId) {
+        return this.recipes.find(r => r.id === recipeId);
+      }
+
+      getStory(chapter, trigger) {
+        const stories = this.stories[chapter] || [];
+        return stories.find(s => s.trigger === trigger) || null;
       }
     }
 
@@ -319,6 +372,15 @@
           'assets/items/coat_travel.png',
           'assets/items/boots_leather.png',
           'assets/items/dress_evening.png',
+          // Furniture (6 files)
+          'assets/furniture/table_old.png',
+          'assets/furniture/chair_fabric.png',
+          'assets/furniture/bookshelf.png',
+          'assets/furniture/dresser.png',
+          'assets/furniture/lamp_desk.png',
+          'assets/furniture/painting.png',
+          // Character (1 file)
+          'assets/characters/character.png',
           // UI (1 file)
           'assets/ui/main_bg.png'
         ];
@@ -629,17 +691,48 @@
 
         // Render chapters and levels
         for (const btn of this.buttons) {
+          const unlocked = this.game.gameState.isChapterUnlocked(btn.chapter.id);
+
           // Chapter title
           ctx.fillStyle = '#3E2723';
           ctx.font = 'bold 24px "Microsoft YaHei", Arial';
           ctx.textAlign = 'left';
           ctx.fillText(`第${btn.chapter.id}章：${btn.chapter.name}`, 100, btn.chapterY);
 
+          // Chapter goal progress (right side)
+          if (unlocked) {
+            const goals = btn.chapter.goals || [];
+            const done = goals.filter(g => this.game.gameState.isGoalCompleted(g.id)).length;
+            ctx.fillStyle = (done === goals.length && goals.length > 0) ? '#4CAF50' : '#9E9E9E';
+            ctx.font = '15px "Microsoft YaHei", Arial';
+            ctx.textAlign = 'right';
+            ctx.fillText(`章节目标 ${done}/${goals.length}`, 750, btn.chapterY);
+          }
+
           // Level buttons
           for (const levelBtn of btn.levelButtons) {
             this.renderLevelButton(ctx, levelBtn);
           }
         }
+
+        // Action buttons row at bottom
+        const actionBtns = [
+          { label: '配方工坊', x: 110, color: '#8B6F47' },
+          { label: '装扮', x: 310, color: '#C2185B' },
+          { label: '装修', x: 510, color: '#1565C0' }
+        ];
+        ctx.textBaseline = 'middle';
+        for (const ab of actionBtns) {
+          ctx.fillStyle = ab.color;
+          ctx.beginPath();
+          ctx.roundRect(ab.x, 525, 180, 50, 10);
+          ctx.fill();
+          ctx.fillStyle = '#FFFFFF';
+          ctx.font = 'bold 18px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(ab.label, ab.x + 90, 550);
+        }
+        ctx.textBaseline = 'alphabetic';
       }
 
       renderLevelButton(ctx, btn) {
@@ -686,6 +779,22 @@
               this.startLevel(levelBtn.chapter, levelBtn.level, levelBtn.levelId);
               return;
             }
+          }
+        }
+
+        // Action buttons
+        if (y >= 525 && y <= 575) {
+          if (x >= 110 && x <= 290) {
+            this.game.sceneManager.switchTo(new Workshop(this.game));
+            return;
+          }
+          if (x >= 310 && x <= 490) {
+            this.game.sceneManager.switchTo(new DressUp(this.game));
+            return;
+          }
+          if (x >= 510 && x <= 690) {
+            this.game.sceneManager.switchTo(new Room(this.game));
+            return;
           }
         }
       }
@@ -1125,6 +1234,745 @@
           };
         }
       }
+    }
+
+    // ============================================================
+    // WORKSHOP SCENE
+    // ============================================================
+    class Workshop extends Scene {
+      constructor(game) {
+        super(game);
+        this.recipes = [];
+        this.selectedRecipe = null;
+        this.scrollY = 0;
+        this.maxScroll = 0;
+        this.ITEM_H = 80;
+        this.LIST_W = 400;
+      }
+
+      onEnter() {
+        this.recipes = this.game.dataLoader.recipes;
+        this.maxScroll = Math.max(0, this.recipes.length * this.ITEM_H - 480);
+        this.selectedRecipe = this.recipes.length > 0 ? this.recipes[0] : null;
+        this._onWheel = (e) => {
+          this.scrollY = Math.max(0, Math.min(this.maxScroll, this.scrollY + e.deltaY * 0.5));
+        };
+        this.game.canvas.addEventListener('wheel', this._onWheel);
+      }
+
+      onExit() {
+        this.game.canvas.removeEventListener('wheel', this._onWheel);
+      }
+
+      canCraft(recipe) {
+        return recipe.ingredients.every(ing =>
+          this.game.gameState.hasItem(ing.item_id, ing.count)
+        );
+      }
+
+      craft(recipe) {
+        if (!this.canCraft(recipe)) return;
+        for (const ing of recipe.ingredients) {
+          this.game.gameState.removeItem(ing.item_id, ing.count);
+        }
+        this.game.gameState.addItem(recipe.result, 1);
+        this.game.saveSystem.save();
+      }
+
+      render(ctx) {
+        ctx.fillStyle = '#F5E6D3';
+        ctx.fillRect(0, 0, 800, 600);
+
+        ctx.fillStyle = '#3E2723';
+        ctx.font = 'bold 28px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('配方工坊', 400, 40);
+
+        // Left panel: recipe list
+        ctx.fillStyle = '#FFF8F0';
+        ctx.fillRect(0, 60, this.LIST_W, 480);
+
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, 60, this.LIST_W, 480);
+        ctx.clip();
+
+        for (let i = 0; i < this.recipes.length; i++) {
+          const recipe = this.recipes[i];
+          const y = 60 + i * this.ITEM_H - this.scrollY;
+          if (y + this.ITEM_H < 60 || y > 540) continue;
+
+          ctx.fillStyle = this.selectedRecipe === recipe ? '#FFE0B2' : (i % 2 === 0 ? '#FFFFFF' : '#FFF3E0');
+          ctx.fillRect(0, y, this.LIST_W, this.ITEM_H);
+
+          const img = this.game.assetLoader.getImage(recipe.result);
+          if (img) {
+            ctx.drawImage(img, 8, y + 10, 60, 60);
+          } else {
+            const it = this.game.dataLoader.getItem(recipe.result);
+            ctx.fillStyle = it ? it.color : '#999';
+            ctx.beginPath();
+            ctx.arc(38, y + 40, 25, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          ctx.fillStyle = '#3E2723';
+          ctx.font = 'bold 15px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'left';
+          ctx.fillText(recipe.name, 78, y + 22);
+
+          const ingStr = recipe.ingredients.map(ing => {
+            const it = this.game.dataLoader.getItem(ing.item_id);
+            const owned = this.game.gameState.inventory[ing.item_id] || 0;
+            return `${it ? it.name : ing.item_id}x${ing.count}(${owned})`;
+          }).join('  ');
+          ctx.fillStyle = this.canCraft(recipe) ? '#4CAF50' : '#999999';
+          ctx.font = '12px "Microsoft YaHei", Arial';
+          ctx.fillText(ingStr, 78, y + 45);
+
+          if (this.canCraft(recipe)) {
+            ctx.fillStyle = '#4CAF50';
+            ctx.font = 'bold 13px "Microsoft YaHei", Arial';
+            ctx.textAlign = 'right';
+            ctx.fillText('可合成', this.LIST_W - 8, y + 42);
+          }
+
+          ctx.strokeStyle = '#E0D0C0';
+          ctx.lineWidth = 1;
+          ctx.beginPath();
+          ctx.moveTo(0, y + this.ITEM_H);
+          ctx.lineTo(this.LIST_W, y + this.ITEM_H);
+          ctx.stroke();
+        }
+        ctx.restore();
+
+        ctx.strokeStyle = '#C8A87A';
+        ctx.lineWidth = 2;
+        ctx.beginPath();
+        ctx.moveTo(this.LIST_W, 60);
+        ctx.lineTo(this.LIST_W, 600);
+        ctx.stroke();
+
+        if (this.selectedRecipe) {
+          this.renderDetail(ctx, this.selectedRecipe);
+        }
+
+        ctx.fillStyle = '#8B6F47';
+        ctx.beginPath();
+        ctx.roundRect(20, 548, 110, 42, 8);
+        ctx.fill();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 16px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('返回', 75, 569);
+        ctx.textBaseline = 'alphabetic';
+      }
+
+      renderDetail(ctx, recipe) {
+        ctx.fillStyle = '#3E2723';
+        ctx.font = 'bold 20px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(recipe.name, 600, 100);
+
+        const resultItem = this.game.dataLoader.getItem(recipe.result);
+        const resultImg = this.game.assetLoader.getImage(recipe.result);
+        if (resultImg) {
+          ctx.drawImage(resultImg, 560, 115, 80, 80);
+        } else {
+          ctx.fillStyle = resultItem ? resultItem.color : '#999';
+          ctx.beginPath();
+          ctx.arc(600, 155, 35, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.fillStyle = '#3E2723';
+        ctx.font = '15px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(resultItem ? resultItem.name : recipe.result, 600, 210);
+
+        ctx.font = 'bold 16px "Microsoft YaHei", Arial';
+        ctx.fillText('所需材料：', 600, 248);
+
+        let iy = 275;
+        for (const ing of recipe.ingredients) {
+          const item = this.game.dataLoader.getItem(ing.item_id);
+          const owned = this.game.gameState.inventory[ing.item_id] || 0;
+          const enough = owned >= ing.count;
+          const img = this.game.assetLoader.getImage(ing.item_id);
+          if (img) ctx.drawImage(img, 450, iy - 14, 28, 28);
+          ctx.fillStyle = enough ? '#4CAF50' : '#E53935';
+          ctx.font = '15px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'left';
+          ctx.fillText(`${item ? item.name : ing.item_id}  ${owned} / ${ing.count}`, 486, iy + 4);
+          iy += 36;
+        }
+
+        const canCraft = this.canCraft(recipe);
+        ctx.fillStyle = canCraft ? '#4CAF50' : '#BDBDBD';
+        ctx.beginPath();
+        ctx.roundRect(505, 425, 190, 52, 10);
+        ctx.fill();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 20px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('合成', 600, 451);
+        ctx.textBaseline = 'alphabetic';
+
+        const ownedResult = this.game.gameState.inventory[recipe.result] || 0;
+        ctx.fillStyle = '#888';
+        ctx.font = '14px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(`已拥有: ${ownedResult}`, 600, 498);
+      }
+
+      onMouseDown(x, y) {
+        if (x >= 20 && x <= 130 && y >= 548 && y <= 590) {
+          this.game.sceneManager.switchTo(new MainMenu(this.game));
+          return;
+        }
+        if (x < this.LIST_W && y >= 60 && y <= 540) {
+          const idx = Math.floor((y - 60 + this.scrollY) / this.ITEM_H);
+          if (idx >= 0 && idx < this.recipes.length) {
+            this.selectedRecipe = this.recipes[idx];
+          }
+          return;
+        }
+        if (this.selectedRecipe && x >= 505 && x <= 695 && y >= 425 && y <= 477) {
+          this.craft(this.selectedRecipe);
+        }
+      }
+
+      update(deltaTime) {}
+      onMouseMove(x, y) {}
+      onMouseUp(x, y) {}
+    }
+
+    // ============================================================
+    // DRESS UP SCENE
+    // ============================================================
+    class DressUp extends Scene {
+      constructor(game) {
+        super(game);
+        this.SLOTS = [
+          { id: 'top', name: '上衣', y: 110 },
+          { id: 'shoes', name: '鞋子', y: 220 }
+        ];
+        this.invScroll = 0;
+        this.ITEM_W = 90;
+      }
+
+      onEnter() {
+        this._onWheel = (e) => {
+          const max = Math.max(0, this.getOwnedOutfits().length * this.ITEM_W - 720);
+          this.invScroll = Math.max(0, Math.min(max, this.invScroll + e.deltaY * 0.5));
+        };
+        this.game.canvas.addEventListener('wheel', this._onWheel);
+      }
+
+      onExit() {
+        this.game.canvas.removeEventListener('wheel', this._onWheel);
+      }
+
+      getOwnedOutfits() {
+        return this.game.dataLoader.items.filter(item =>
+          item.type === 'outfit' && this.game.gameState.hasItem(item.id)
+        );
+      }
+
+      render(ctx) {
+        ctx.fillStyle = '#FCE4EC';
+        ctx.fillRect(0, 0, 800, 600);
+
+        ctx.fillStyle = '#3E2723';
+        ctx.font = 'bold 28px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('装扮', 400, 40);
+
+        // Character area (left)
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.roundRect(20, 60, 370, 430, 12);
+        ctx.fill();
+
+        const charImg = this.game.assetLoader.getImage('character');
+        if (charImg) {
+          const maxW = 330, maxH = 390;
+          const ratio = Math.min(maxW / charImg.width, maxH / charImg.height);
+          const dw = charImg.width * ratio, dh = charImg.height * ratio;
+          ctx.drawImage(charImg, 20 + (370 - dw) / 2, 65 + (430 - dh) / 2, dw, dh);
+        } else {
+          ctx.fillStyle = '#ECCCD8';
+          ctx.beginPath();
+          ctx.ellipse(205, 140, 38, 48, 0, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillRect(165, 185, 80, 200);
+        }
+
+        // Slot panel (right)
+        ctx.fillStyle = '#FFFFFF';
+        ctx.beginPath();
+        ctx.roundRect(410, 60, 370, 430, 12);
+        ctx.fill();
+
+        ctx.fillStyle = '#3E2723';
+        ctx.font = 'bold 18px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('已装备：', 430, 92);
+
+        const outfit = this.game.gameState.outfit;
+        for (const slot of this.SLOTS) {
+          const equipped = outfit[slot.id];
+          const equippedItem = equipped ? this.game.dataLoader.getItem(equipped) : null;
+
+          ctx.fillStyle = '#5D4037';
+          ctx.font = '14px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'left';
+          ctx.fillText(slot.name, 430, slot.y);
+
+          ctx.fillStyle = equipped ? '#FFE0B2' : '#F5F5F5';
+          ctx.beginPath();
+          ctx.roundRect(430, slot.y + 6, 330, 70, 8);
+          ctx.fill();
+          ctx.strokeStyle = '#D7A566';
+          ctx.lineWidth = 1.5;
+          ctx.stroke();
+
+          if (equipped) {
+            const img = this.game.assetLoader.getImage(equipped);
+            if (img) ctx.drawImage(img, 437, slot.y + 8, 56, 56);
+            ctx.fillStyle = '#3E2723';
+            ctx.font = '14px "Microsoft YaHei", Arial';
+            ctx.textAlign = 'left';
+            ctx.fillText(equippedItem ? equippedItem.name : equipped, 500, slot.y + 47);
+            ctx.fillStyle = '#EF9A9A';
+            ctx.beginPath();
+            ctx.roundRect(718, slot.y + 22, 32, 28, 5);
+            ctx.fill();
+            ctx.fillStyle = '#FFF';
+            ctx.font = 'bold 12px Arial';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('脱', 734, slot.y + 36);
+            ctx.textBaseline = 'alphabetic';
+          } else {
+            ctx.fillStyle = '#BDBDBD';
+            ctx.font = '14px "Microsoft YaHei", Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('(未装备)', 595, slot.y + 46);
+          }
+        }
+
+        // Inventory (bottom bar)
+        ctx.fillStyle = '#FFFFFF';
+        ctx.fillRect(0, 500, 800, 100);
+        ctx.fillStyle = '#DDAACC';
+        ctx.fillRect(0, 500, 800, 2);
+
+        ctx.fillStyle = '#3E2723';
+        ctx.font = 'bold 14px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('背包服装 (点击装备)：', 10, 522);
+
+        const owned = this.getOwnedOutfits();
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, 528, 800, 72);
+        ctx.clip();
+        for (let i = 0; i < owned.length; i++) {
+          const item = owned[i];
+          const ix = 10 + i * this.ITEM_W - this.invScroll;
+          if (ix + this.ITEM_W < 0 || ix > 800) continue;
+          const img = this.game.assetLoader.getImage(item.id);
+          if (img) {
+            ctx.drawImage(img, ix, 530, 68, 60);
+          } else {
+            ctx.fillStyle = item.color || '#999';
+            ctx.beginPath();
+            ctx.roundRect(ix, 533, 68, 52, 6);
+            ctx.fill();
+          }
+          ctx.fillStyle = '#3E2723';
+          ctx.font = '10px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(item.name, ix + 34, 596);
+        }
+        ctx.restore();
+
+        if (owned.length === 0) {
+          ctx.fillStyle = '#BDBDBD';
+          ctx.font = '15px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('背包中没有服装，请先在配方工坊合成', 400, 562);
+        }
+
+        ctx.fillStyle = '#8B6F47';
+        ctx.beginPath();
+        ctx.roundRect(655, 548, 125, 42, 8);
+        ctx.fill();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 16px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('返回', 717, 569);
+        ctx.textBaseline = 'alphabetic';
+      }
+
+      onMouseDown(x, y) {
+        if (x >= 655 && x <= 780 && y >= 548 && y <= 590) {
+          this.game.sceneManager.switchTo(new MainMenu(this.game));
+          return;
+        }
+        const outfit = this.game.gameState.outfit;
+        for (const slot of this.SLOTS) {
+          if (outfit[slot.id] && x >= 718 && x <= 750 && y >= slot.y + 22 && y <= slot.y + 50) {
+            this.game.gameState.unequip(slot.id);
+            this.game.saveSystem.save();
+            return;
+          }
+        }
+        if (y >= 528 && y <= 600) {
+          const owned = this.getOwnedOutfits();
+          for (let i = 0; i < owned.length; i++) {
+            const ix = 10 + i * this.ITEM_W - this.invScroll;
+            if (x >= ix && x <= ix + this.ITEM_W) {
+              const item = owned[i];
+              this.game.gameState.equip(item.slot, item.id);
+              this.game.saveSystem.save();
+              for (const chapter of this.game.dataLoader.chapters) {
+                for (const goal of chapter.goals || []) {
+                  if (goal.type === 'equip' && goal.item_id === item.id) {
+                    this.game.gameState.completeGoal(goal.id);
+                    this.game.saveSystem.save();
+                  }
+                }
+              }
+              return;
+            }
+          }
+        }
+      }
+
+      update(deltaTime) {}
+      onMouseMove(x, y) {}
+      onMouseUp(x, y) {}
+    }
+
+    // ============================================================
+    // ROOM SCENE
+    // ============================================================
+    class Room extends Scene {
+      constructor(game) {
+        super(game);
+        this.ROOM_H = 390;
+        this.INV_Y = 398;
+        this.ITEM_W = 90;
+        this.invScroll = 0;
+      }
+
+      onEnter() {
+        this._onWheel = (e) => {
+          const max = Math.max(0, this.getUnplaced().length * this.ITEM_W - 720);
+          this.invScroll = Math.max(0, Math.min(max, this.invScroll + e.deltaY * 0.5));
+        };
+        this.game.canvas.addEventListener('wheel', this._onWheel);
+      }
+
+      onExit() {
+        this.game.canvas.removeEventListener('wheel', this._onWheel);
+      }
+
+      getAllOwned() {
+        return this.game.dataLoader.items.filter(item =>
+          item.type === 'furniture' && this.game.gameState.hasItem(item.id)
+        );
+      }
+
+      getUnplaced() {
+        const placed = this.game.gameState.placedFurniture;
+        return this.getAllOwned().filter(item => !placed[item.id]);
+      }
+
+      getPlaced() {
+        const placed = this.game.gameState.placedFurniture;
+        return Object.entries(placed).map(([id, pos]) => ({
+          id, x: pos.x, y: pos.y,
+          item: this.game.dataLoader.getItem(id)
+        })).filter(f => f.item);
+      }
+
+      render(ctx) {
+        ctx.fillStyle = '#E8D5B7';
+        ctx.fillRect(0, 0, 800, this.ROOM_H);
+        ctx.fillStyle = '#D4B896';
+        ctx.fillRect(0, this.ROOM_H - 70, 800, 70);
+        ctx.strokeStyle = '#C9A87A';
+        ctx.lineWidth = 2;
+        ctx.setLineDash([10, 10]);
+        ctx.beginPath();
+        ctx.moveTo(0, this.ROOM_H - 70);
+        ctx.lineTo(800, this.ROOM_H - 70);
+        ctx.stroke();
+        ctx.setLineDash([]);
+
+        ctx.fillStyle = '#3E2723';
+        ctx.font = 'bold 22px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('房间装修', 400, 30);
+
+        for (const pf of this.getPlaced()) {
+          const img = this.game.assetLoader.getImage(pf.id);
+          const S = 80;
+          if (img) {
+            ctx.drawImage(img, pf.x - S / 2, pf.y - S / 2, S, S);
+          } else {
+            ctx.fillStyle = pf.item.color || '#888';
+            ctx.beginPath();
+            ctx.roundRect(pf.x - S / 2, pf.y - S / 2, S, S, 6);
+            ctx.fill();
+          }
+          ctx.fillStyle = '#3E2723';
+          ctx.font = '11px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(pf.item.name, pf.x, pf.y + S / 2 + 14);
+
+          ctx.fillStyle = 'rgba(230,60,60,0.85)';
+          ctx.beginPath();
+          ctx.arc(pf.x + S / 2, pf.y - S / 2, 10, 0, Math.PI * 2);
+          ctx.fill();
+          ctx.fillStyle = '#FFF';
+          ctx.font = 'bold 13px Arial';
+          ctx.textAlign = 'center';
+          ctx.textBaseline = 'middle';
+          ctx.fillText('x', pf.x + S / 2, pf.y - S / 2);
+          ctx.textBaseline = 'alphabetic';
+        }
+
+        if (this.getPlaced().length === 0) {
+          ctx.fillStyle = 'rgba(100,80,60,0.35)';
+          ctx.font = '18px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText('点击下方家具放置到房间中', 400, 200);
+        }
+
+        ctx.fillStyle = '#C8A87A';
+        ctx.fillRect(0, this.ROOM_H, 800, 4);
+        ctx.fillStyle = '#FFF8EE';
+        ctx.fillRect(0, this.INV_Y, 800, 202);
+
+        ctx.fillStyle = '#3E2723';
+        ctx.font = 'bold 14px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'left';
+        ctx.fillText('家具背包 (点击放置)：', 10, this.INV_Y + 22);
+
+        const unplaced = this.getUnplaced();
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(0, this.INV_Y + 28, 800, 120);
+        ctx.clip();
+        for (let i = 0; i < unplaced.length; i++) {
+          const item = unplaced[i];
+          const ix = 10 + i * this.ITEM_W - this.invScroll;
+          if (ix + this.ITEM_W < 0 || ix > 800) continue;
+          const img = this.game.assetLoader.getImage(item.id);
+          if (img) {
+            ctx.drawImage(img, ix, this.INV_Y + 32, 70, 70);
+          } else {
+            ctx.fillStyle = item.color || '#888';
+            ctx.beginPath();
+            ctx.roundRect(ix, this.INV_Y + 36, 70, 62, 6);
+            ctx.fill();
+          }
+          ctx.fillStyle = '#3E2723';
+          ctx.font = '10px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(item.name, ix + 35, this.INV_Y + 114);
+        }
+        ctx.restore();
+
+        if (unplaced.length === 0) {
+          ctx.fillStyle = '#BDBDBD';
+          ctx.font = '15px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'center';
+          ctx.fillText(
+            this.getAllOwned().length > 0 ? '所有家具已放置' : '背包中没有家具，请先合成',
+            400, this.INV_Y + 80
+          );
+        }
+
+        ctx.fillStyle = '#8B6F47';
+        ctx.beginPath();
+        ctx.roundRect(655, 548, 125, 42, 8);
+        ctx.fill();
+        ctx.fillStyle = '#FFFFFF';
+        ctx.font = 'bold 16px "Microsoft YaHei", Arial';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText('返回', 717, 569);
+        ctx.textBaseline = 'alphabetic';
+      }
+
+      onMouseDown(x, y) {
+        if (x >= 655 && x <= 780 && y >= 548 && y <= 590) {
+          this.game.sceneManager.switchTo(new MainMenu(this.game));
+          return;
+        }
+        const S = 80;
+        for (const pf of this.getPlaced()) {
+          const bx = pf.x + S / 2, by = pf.y - S / 2;
+          if (Math.hypot(x - bx, y - by) < 12) {
+            delete this.game.gameState.placedFurniture[pf.id];
+            this.game.saveSystem.save();
+            return;
+          }
+        }
+        if (y >= this.INV_Y + 28 && y <= this.INV_Y + 148) {
+          const unplaced = this.getUnplaced();
+          for (let i = 0; i < unplaced.length; i++) {
+            const ix = 10 + i * this.ITEM_W - this.invScroll;
+            if (x >= ix && x <= ix + this.ITEM_W) {
+              const item = unplaced[i];
+              const already = this.getPlaced().length;
+              const px = 80 + (already % 6) * 120;
+              const py = 100 + Math.floor(already / 6) * 150;
+              this.game.gameState.placedFurniture[item.id] = { x: px, y: py };
+              this.game.saveSystem.save();
+              for (const chapter of this.game.dataLoader.chapters) {
+                for (const goal of chapter.goals || []) {
+                  if (goal.type === 'place_furniture' && goal.item_id === item.id) {
+                    this.game.gameState.completeGoal(goal.id);
+                    this.game.saveSystem.save();
+                  }
+                }
+              }
+              return;
+            }
+          }
+        }
+      }
+
+      update(deltaTime) {}
+      onMouseMove(x, y) {}
+      onMouseUp(x, y) {}
+    }
+
+    // ============================================================
+    // STORY SCENE
+    // ============================================================
+    class Story extends Scene {
+      constructor(game, storyData, onComplete) {
+        super(game);
+        this.lines = storyData ? storyData.lines : [];
+        this.onComplete = onComplete;
+        this.lineIndex = 0;
+        this.charIndex = 0;
+        this.elapsed = 0;
+        this.CHAR_DELAY = 0.04;
+        this.currentText = '';
+        this.done = false;
+      }
+
+      onEnter() {
+        this.lineIndex = 0;
+        this.charIndex = 0;
+        this.currentText = '';
+        this.elapsed = 0;
+        this.done = this.lines.length === 0;
+        if (this.done && this.onComplete) this.onComplete();
+      }
+
+      update(deltaTime) {
+        if (this.done || !this.lines[this.lineIndex]) return;
+        const line = this.lines[this.lineIndex];
+        if (this.charIndex < line.text.length) {
+          this.elapsed += deltaTime;
+          while (this.elapsed >= this.CHAR_DELAY && this.charIndex < line.text.length) {
+            this.elapsed -= this.CHAR_DELAY;
+            this.charIndex++;
+          }
+          this.currentText = line.text.substring(0, this.charIndex);
+        }
+      }
+
+      render(ctx) {
+        ctx.fillStyle = '#1A0A00';
+        ctx.fillRect(0, 0, 800, 600);
+
+        const charImg = this.game.assetLoader.getImage('character');
+        if (charImg) {
+          const maxH = 340;
+          const ratio = maxH / charImg.height;
+          const dw = charImg.width * ratio;
+          ctx.drawImage(charImg, (800 - dw) / 2, 15, dw, maxH);
+        }
+
+        ctx.fillStyle = 'rgba(15, 8, 0, 0.88)';
+        ctx.beginPath();
+        ctx.roundRect(20, 365, 760, 195, 12);
+        ctx.fill();
+        ctx.strokeStyle = '#C8A87A';
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        if (this.lines.length > 0 && this.lineIndex < this.lines.length) {
+          const line = this.lines[this.lineIndex];
+          ctx.fillStyle = '#FFD700';
+          ctx.font = 'bold 20px "Microsoft YaHei", Arial';
+          ctx.textAlign = 'left';
+          ctx.fillText(line.speaker, 40, 398);
+
+          ctx.fillStyle = '#FFFFFF';
+          ctx.font = '17px "Microsoft YaHei", Arial';
+          this.wrapText(ctx, this.currentText, 40, 428, 720, 27);
+
+          if (this.charIndex >= line.text.length) {
+            ctx.fillStyle = '#C8A87A';
+            ctx.font = '13px Arial';
+            ctx.textAlign = 'right';
+            const label = this.lineIndex < this.lines.length - 1 ? '点击继续 >' : '点击结束 >';
+            ctx.fillText(label, 770, 548);
+          }
+        }
+      }
+
+      wrapText(ctx, text, x, y, maxWidth, lineH) {
+        let line = '', curY = y;
+        for (const ch of text) {
+          const test = line + ch;
+          if (ctx.measureText(test).width > maxWidth && line !== '') {
+            ctx.fillText(line, x, curY);
+            line = ch;
+            curY += lineH;
+            if (curY > 548) break;
+          } else {
+            line = test;
+          }
+        }
+        if (line) ctx.fillText(line, x, curY);
+      }
+
+      onMouseDown(x, y) {
+        if (this.done) { if (this.onComplete) this.onComplete(); return; }
+        const line = this.lines[this.lineIndex];
+        if (!line) return;
+        if (this.charIndex < line.text.length) {
+          this.charIndex = line.text.length;
+          this.currentText = line.text;
+        } else {
+          this.lineIndex++;
+          if (this.lineIndex >= this.lines.length) {
+            this.done = true;
+            if (this.onComplete) this.onComplete();
+          } else {
+            this.charIndex = 0;
+            this.currentText = '';
+            this.elapsed = 0;
+          }
+        }
+      }
+
+      onMouseMove(x, y) {}
+      onMouseUp(x, y) {}
     }
 
     // Start game when page loads
