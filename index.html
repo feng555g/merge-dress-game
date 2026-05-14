@@ -904,15 +904,16 @@
         ctx.font = '20px "Microsoft YaHei", Arial';
         ctx.fillText('获得奖励：', 400, 280);
 
-        // Show collected items
+        // Show rewards from level config
         ctx.font = '18px "Microsoft YaHei", Arial';
         let rewardY = 320;
-        for (const goal of this.goals) {
-          const item = this.game.dataLoader.getItem(goal.item_id);
-          if (item) {
-            const collected = this.collected[goal.item_id] || 0;
-            ctx.fillText(`${item.name} × ${collected}`, 400, rewardY);
-            rewardY += 30;
+        if (this.levelData.rewards) {
+          for (const reward of this.levelData.rewards) {
+            const item = this.game.dataLoader.getItem(reward.item_id);
+            if (item) {
+              ctx.fillText(`${item.name} × ${reward.count}`, 400, rewardY);
+              rewardY += 30;
+            }
           }
         }
 
