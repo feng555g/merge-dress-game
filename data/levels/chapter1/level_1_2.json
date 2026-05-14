@@ -2,7 +2,7 @@
   "id": "1_2",
   "chapter": 1,
   "name": "布料收集",
-  "grid_size": {"cols": 5, "rows": 7},
+  "grid_size": {"cols": 5, "rows": 5},
   "initial_items": [
     {"item_id": "leaf_1", "col": 0, "row": 0},
     {"item_id": "leaf_1", "col": 1, "row": 0},

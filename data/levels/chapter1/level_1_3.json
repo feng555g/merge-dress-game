@@ -2,7 +2,7 @@
   "id": "1_3",
   "chapter": 1,
   "name": "木材加工",
-  "grid_size": {"cols": 5, "rows": 7},
+  "grid_size": {"cols": 5, "rows": 5},
   "initial_items": [
     {"item_id": "wood_1", "col": 0, "row": 0},
     {"item_id": "wood_1", "col": 1, "row": 0},
