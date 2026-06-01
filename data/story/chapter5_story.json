@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ch5_intro",
+    "trigger": "chapter_start",
+    "lines": [
+      {"speaker": "女主", "text": "妈，我们把这里改造成真正的家吧。"},
+      {"speaker": "母亲", "text": "好，我们一起。"},
+      {"speaker": "旁白", "text": "她们开始了新的生活，用双手重建失去的时光。"}
+    ]
+  },
+  {
+    "id": "ch5_complete",
+    "trigger": "chapter_complete",
+    "lines": [
+      {"speaker": "旁白", "text": "那天的夕阳很美，像是所有失去的时光都回来了。"},
+      {"speaker": "女主", "text": "妈，谢谢你等我。"},
+      {"speaker": "母亲", "text": "只要你回来，等多久都值得。"}
+    ]
+  }
+]

@@ -1,0 +1,20 @@
+[
+  {
+    "id": "ch4_intro",
+    "trigger": "chapter_start",
+    "lines": [
+      {"speaker": "母亲", "text": "这里就是你出生的地方，孩子。"},
+      {"speaker": "女主", "text": "一切都这么陌生……"},
+      {"speaker": "旁白", "text": "老宅的每一个角落，都藏着她遗忘的故事。"}
+    ]
+  },
+  {
+    "id": "ch4_complete",
+    "trigger": "chapter_complete",
+    "lines": [
+      {"speaker": "女主", "text": "我记起来了，这件衣服……是你为我做的。"},
+      {"speaker": "母亲", "text": "你终于记得了。"},
+      {"speaker": "旁白", "text": "记忆的碎片，正在一片片拼回来。"}
+    ]
+  }
+]
