@@ -32,5 +32,27 @@
       {"id": "place_dresser", "type": "place_furniture", "item_id": "dresser", "description": "放置梳妆台"},
       {"id": "place_painting", "type": "place_furniture", "item_id": "painting", "description": "放置壁画"}
     ]
+  },
+  {
+    "id": 4,
+    "name": "母亲的秘密",
+    "unlock_condition": {"chapter_complete": 3},
+    "levels": ["4_1", "4_2", "4_3"],
+    "goals": [
+      {"id": "equip_blouse_memory", "type": "equip", "item_id": "blouse_memory", "description": "合成并穿上记忆上衣"},
+      {"id": "place_wardrobe", "type": "place_furniture", "item_id": "wardrobe", "description": "放置衣橱"},
+      {"id": "place_mirror_stand", "type": "place_furniture", "item_id": "mirror_stand", "description": "放置立式镜"}
+    ]
+  },
+  {
+    "id": 5,
+    "name": "重新开始",
+    "unlock_condition": {"chapter_complete": 4},
+    "levels": ["5_1", "5_2"],
+    "goals": [
+      {"id": "equip_dress_heritage", "type": "equip", "item_id": "dress_heritage", "description": "合成并穿上传承礼服"},
+      {"id": "place_sofa_elegant", "type": "place_furniture", "item_id": "sofa_elegant", "description": "放置雅致沙发"},
+      {"id": "place_chandelier", "type": "place_furniture", "item_id": "chandelier", "description": "放置水晶吊灯"}
+    ]
   }
 ]
