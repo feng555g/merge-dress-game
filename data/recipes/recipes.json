@@ -68,5 +68,40 @@
     "result": "painting",
     "ingredients": [{"item_id": "cut_gem", "count": 1}, {"item_id": "fabric_3", "count": 2}],
     "chapter": 3
+  },
+  {
+    "id": "recipe_embroidered_cloth",
+    "name": "刺绣布料配方",
+    "result": "embroidered_cloth",
+    "ingredients": [{"item_id": "fabric_3", "count": 2}],
+    "chapter": 4
+  },
+  {
+    "id": "recipe_precious_wood",
+    "name": "贵重木材配方",
+    "result": "precious_wood",
+    "ingredients": [{"item_id": "polished_wood", "count": 2}],
+    "chapter": 4
+  },
+  {
+    "id": "recipe_blouse_memory",
+    "name": "记忆上衣配方",
+    "result": "blouse_memory",
+    "ingredients": [{"item_id": "fabric_3", "count": 2}, {"item_id": "embroidered_cloth", "count": 1}],
+    "chapter": 4
+  },
+  {
+    "id": "recipe_wardrobe",
+    "name": "衣橱配方",
+    "result": "wardrobe",
+    "ingredients": [{"item_id": "precious_wood", "count": 3}, {"item_id": "polished_wood", "count": 1}],
+    "chapter": 4
+  },
+  {
+    "id": "recipe_mirror_stand",
+    "name": "立式镜配方",
+    "result": "mirror_stand",
+    "ingredients": [{"item_id": "precious_wood", "count": 2}, {"item_id": "cut_gem", "count": 2}],
+    "chapter": 4
   }
 ]
