@@ -103,5 +103,26 @@
     "result": "mirror_stand",
     "ingredients": [{"item_id": "precious_wood", "count": 2}, {"item_id": "cut_gem", "count": 2}],
     "chapter": 4
+  },
+  {
+    "id": "recipe_dress_heritage",
+    "name": "传承礼服配方",
+    "result": "dress_heritage",
+    "ingredients": [{"item_id": "embroidered_cloth", "count": 3}, {"item_id": "cut_gem", "count": 2}],
+    "chapter": 5
+  },
+  {
+    "id": "recipe_sofa_elegant",
+    "name": "雅致沙发配方",
+    "result": "sofa_elegant",
+    "ingredients": [{"item_id": "precious_wood", "count": 2}, {"item_id": "embroidered_cloth", "count": 2}],
+    "chapter": 5
+  },
+  {
+    "id": "recipe_chandelier",
+    "name": "水晶吊灯配方",
+    "result": "chandelier",
+    "ingredients": [{"item_id": "cut_gem", "count": 3}, {"item_id": "gem_chip", "count": 2}],
+    "chapter": 5
   }
 ]
