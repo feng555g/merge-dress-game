@@ -32,5 +32,8 @@
   {"id": "precious_wood", "name": "贵重木材", "type": "material", "category": "wood", "color": "#8D6E63"},
   {"id": "blouse_memory", "name": "记忆上衣", "type": "outfit", "slot": "top", "chapter": 4, "color": "#CE93D8"},
   {"id": "wardrobe", "name": "衣橱", "type": "furniture", "room": "bedroom", "chapter": 4, "color": "#A1887F"},
-  {"id": "mirror_stand", "name": "立式镜", "type": "furniture", "room": "bedroom", "chapter": 4, "color": "#B0BEC5"}
+  {"id": "mirror_stand", "name": "立式镜", "type": "furniture", "room": "bedroom", "chapter": 4, "color": "#B0BEC5"},
+  {"id": "dress_heritage", "name": "传承礼服", "type": "outfit", "slot": "top", "chapter": 5, "color": "#7E57C2"},
+  {"id": "sofa_elegant", "name": "雅致沙发", "type": "furniture", "room": "living_room", "chapter": 5, "color": "#80CBC4"},
+  {"id": "chandelier", "name": "水晶吊灯", "type": "furniture", "room": "living_room", "chapter": 5, "color": "#E1F5FE"}
 ]
