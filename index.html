@@ -1007,21 +1007,21 @@
         // Grid
         this.renderGrid(ctx);
 
+        // Generator machine
+        this.renderGenerator(ctx);
+
         // Dragged item
         if (this.isDragging && this.draggedItem) {
           this.renderDraggedItem(ctx);
         }
 
-        // Victory screen
-        if (this.showVictory) {
-          this.renderVictory(ctx);
-        }
-
         // Back button
         this.renderBackButton(ctx);
 
-        // Generator machine
-        this.renderGenerator(ctx);
+        // Victory screen (must be last to appear on top)
+        if (this.showVictory) {
+          this.renderVictory(ctx);
+        }
       }
 
       renderGrid(ctx) {
