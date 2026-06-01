@@ -1,0 +1,25 @@
+{
+  "id": "4_3",
+  "chapter": 4,
+  "name": "记忆碎片",
+  "grid_size": {"cols": 5, "rows": 5},
+  "initial_items": [
+    {"item_id": "gem_1", "col": 0, "row": 0},
+    {"item_id": "gem_1", "col": 1, "row": 0},
+    {"item_id": "gem_1", "col": 2, "row": 0},
+    {"item_id": "gem_1", "col": 3, "row": 0},
+    {"item_id": "gem_2", "col": 4, "row": 0},
+    {"item_id": "wood_1", "col": 0, "row": 2},
+    {"item_id": "wood_1", "col": 1, "row": 2},
+    {"item_id": "wood_1", "col": 2, "row": 2},
+    {"item_id": "wood_1", "col": 3, "row": 2},
+    {"item_id": "wood_2", "col": 4, "row": 2},
+    {"item_id": "gem_2", "col": 0, "row": 4},
+    {"item_id": "wood_2", "col": 1, "row": 4}
+  ],
+  "goals": [{"item_id": "cut_gem", "count": 2}, {"item_id": "polished_wood", "count": 2}],
+  "spawn_pool": ["gem_1", "gem_1", "wood_1", "gem_2", "wood_1"],
+  "rewards": [{"item_id": "cut_gem", "count": 3}, {"item_id": "polished_wood", "count": 3}],
+  "max_moves": 40,
+  "star_thresholds": {"1": 1, "2": 32, "3": 24}
+}
