@@ -27,5 +27,10 @@
   {"id": "bookshelf", "name": "书架", "type": "furniture", "room": "bedroom", "chapter": 2, "color": "#A1887F"},
   {"id": "lamp_desk", "name": "台灯", "type": "furniture", "room": "bedroom", "chapter": 2, "color": "#FFF9C4"},
   {"id": "dresser", "name": "梳妆台", "type": "furniture", "room": "bedroom", "chapter": 3, "color": "#F8BBD9"},
-  {"id": "painting", "name": "壁画", "type": "furniture", "room": "living_room", "chapter": 3, "color": "#E1BEE7"}
+  {"id": "painting", "name": "壁画", "type": "furniture", "room": "living_room", "chapter": 3, "color": "#E1BEE7"},
+  {"id": "embroidered_cloth", "name": "刺绣布料", "type": "material", "category": "cloth", "color": "#F48FB1"},
+  {"id": "precious_wood", "name": "贵重木材", "type": "material", "category": "wood", "color": "#8D6E63"},
+  {"id": "blouse_memory", "name": "记忆上衣", "type": "outfit", "slot": "top", "chapter": 4, "color": "#CE93D8"},
+  {"id": "wardrobe", "name": "衣橱", "type": "furniture", "room": "bedroom", "chapter": 4, "color": "#A1887F"},
+  {"id": "mirror_stand", "name": "立式镜", "type": "furniture", "room": "bedroom", "chapter": 4, "color": "#B0BEC5"}
 ]
