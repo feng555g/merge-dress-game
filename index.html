@@ -395,6 +395,7 @@
           'assets/characters/character.png',
           // UI (1 file)
           'assets/ui/main_bg.png',
+          'assets/ui/level_bg.png',
           // Generator machine
           'assets/characters/img.png'
         ];
@@ -505,6 +506,17 @@
       constructor() {
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
+
+        // HiDPI / Retina support
+        const dpr = window.devicePixelRatio || 1;
+        const logicalW = 800;
+        const logicalH = 600;
+        this.canvas.width  = logicalW * dpr;
+        this.canvas.height = logicalH * dpr;
+        this.canvas.style.width  = logicalW + 'px';
+        this.canvas.style.height = logicalH + 'px';
+        this.ctx.scale(dpr, dpr);
+
         this.gameState = new GameState();
         this.saveSystem = new SaveSystem(this.gameState);
         this.dataLoader = new DataLoader();
@@ -520,8 +532,8 @@
       setupInputHandlers() {
         const getCanvasCoords = (clientX, clientY) => {
           const rect = this.canvas.getBoundingClientRect();
-          const scaleX = this.canvas.width / rect.width;
-          const scaleY = this.canvas.height / rect.height;
+          const scaleX = 800 / rect.width;
+          const scaleY = 600 / rect.height;
           return {
             x: (clientX - rect.left) * scaleX,
             y: (clientY - rect.top) * scaleY
@@ -628,7 +640,7 @@
         this.sceneManager.update(deltaTime);
 
         // Render
-        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.clearRect(0, 0, 800, 600);
         this.sceneManager.render(this.ctx);
 
         requestAnimationFrame((time) => this.gameLoop(time));
@@ -982,8 +994,13 @@
 
       render(ctx) {
         // Background
-        ctx.fillStyle = '#F5F5F5';
-        ctx.fillRect(0, 0, 800, 600);
+        const levelBg = this.game.assetLoader.getImage('level_bg');
+        if (levelBg) {
+          ctx.drawImage(levelBg, 0, 0, 800, 600);
+        } else {
+          ctx.fillStyle = '#F5F5F5';
+          ctx.fillRect(0, 0, 800, 600);
+        }
 
         // Title
         ctx.fillStyle = '#3E2723';
