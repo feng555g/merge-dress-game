@@ -507,15 +507,19 @@
         this.canvas = document.getElementById('gameCanvas');
         this.ctx = this.canvas.getContext('2d');
 
-        // HiDPI / Retina support
+        // HiDPI / Retina support — canvas fills full viewport via CSS,
+        // internal resolution matches physical pixels for crisp rendering.
         const dpr = window.devicePixelRatio || 1;
         const logicalW = 800;
         const logicalH = 600;
-        this.canvas.width  = logicalW * dpr;
-        this.canvas.height = logicalH * dpr;
-        this.canvas.style.width  = logicalW + 'px';
-        this.canvas.style.height = logicalH + 'px';
-        this.ctx.scale(dpr, dpr);
+        // Set internal buffer to physical pixel size
+        this.canvas.width  = window.innerWidth  * dpr;
+        this.canvas.height = window.innerHeight * dpr;
+        // Let CSS (width/height: 100%) control display size — don't override it
+        this.ctx.scale(
+          (window.innerWidth  * dpr) / logicalW,
+          (window.innerHeight * dpr) / logicalH
+        );
 
         this.gameState = new GameState();
         this.saveSystem = new SaveSystem(this.gameState);
@@ -998,17 +1002,18 @@
         if (levelBg) {
           ctx.drawImage(levelBg, 0, 0, 800, 600);
         } else {
-          ctx.fillStyle = '#F5F5F5';
+          ctx.fillStyle = 'rgb(60, 60, 65)';
           ctx.fillRect(0, 0, 800, 600);
         }
 
         // Title
-        ctx.fillStyle = '#3E2723';
+        ctx.fillStyle = '#FFFFFF';
         ctx.font = 'bold 24px "Microsoft YaHei", Arial';
         ctx.textAlign = 'center';
         ctx.fillText(`第${this.chapter}章 - 关卡${this.level}`, 400, 40);
 
         // Goals
+        ctx.fillStyle = '#FFFFFF';
         ctx.font = '18px "Microsoft YaHei", Arial';
         let goalText = '目标: ';
         for (const goal of this.goals) {
@@ -1048,13 +1053,13 @@
             const y = this.gridY + row * this.cellSize;
 
             // Cell background
-            ctx.fillStyle = '#FFFFFF';
+            ctx.fillStyle = 'rgb(60, 60, 65)';
             ctx.beginPath();
             ctx.roundRect(x + 2, y + 2, this.cellSize - 4, this.cellSize - 4, 8);
             ctx.fill();
 
             // Cell border
-            ctx.strokeStyle = '#CCCCCC';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.12)';
             ctx.lineWidth = 2;
             ctx.beginPath();
             ctx.roundRect(x + 2, y + 2, this.cellSize - 4, this.cellSize - 4, 8);

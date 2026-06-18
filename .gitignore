@@ -1,2 +1,10 @@
-.worktrees/
 .DS_Store
+.worktrees/
+.godot/
+.idea/
+__pycache__/
+*.import
+*.bak
+build/
+docs/
+remove_bg.py
