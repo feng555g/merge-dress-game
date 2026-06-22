@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>梦想改造家 — 游戏说明文档</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: "Microsoft YaHei", "PingFang SC", Arial, sans-serif;
+      background: #FFF8F0;
+      color: #3E2723;
+      line-height: 1.8;
+    }
+    .container { max-width: 860px; margin: 0 auto; padding: 48px 32px; }
+
+    h1 { font-size: 36px; color: #BF360C; margin-bottom: 6px; }
+    .subtitle { font-size: 16px; color: #8D6E63; margin-bottom: 40px; }
+
+    section { margin-bottom: 44px; }
+    h2 {
+      font-size: 22px;
+      color: #E64A19;
+      border-left: 5px solid #FFAB76;
+      padding-left: 14px;
+      margin-bottom: 16px;
+    }
+    h3 { font-size: 16px; color: #5D4037; margin: 18px 0 8px; }
+
+    .info-table { width: 100%; border-collapse: collapse; }
+    .info-table td {
+      padding: 10px 16px;
+      border: 1px solid #FFCCBC;
+      vertical-align: top;
+    }
+    .info-table td:first-child {
+      font-weight: bold;
+      background: #FBE9E7;
+      width: 140px;
+      white-space: nowrap;
+    }
+
+    .card {
+      background: #fff;
+      border: 1px solid #FFCCBC;
+      border-radius: 10px;
+      padding: 20px 24px;
+    }
+
+    .chain {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin: 8px 0;
+    }
+    .item-tag {
+      background: #FFF3E0;
+      border: 1px solid #FFAB40;
+      border-radius: 20px;
+      padding: 3px 14px;
+      font-size: 14px;
+    }
+    .arrow { color: #FF7043; font-size: 18px; font-weight: bold; }
+
+    .op-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .op-card {
+      background: #fff;
+      border: 1px solid #FFCCBC;
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+    .op-card h3 { margin-top: 0; }
+
+    ul { padding-left: 20px; }
+    li { margin-bottom: 6px; }
+
+    .screenshot-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+      margin-top: 12px;
+    }
+    .screenshot-slot {
+      background: #F5F5F5;
+      border: 2px dashed #BCAAA4;
+      border-radius: 8px;
+      height: 160px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #BDBDBD;
+      font-size: 13px;
+      text-align: center;
+    }
+    .screenshot-slot img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .placeholder {
+      background: #FFF8E1;
+      border: 1px dashed #FFB300;
+      border-radius: 6px;
+      padding: 12px 16px;
+      color: #E65100;
+      font-size: 14px;
+    }
+
+    .video-block {
+      background: #fff;
+      border: 1px solid #FFCCBC;
+      border-radius: 8px;
+      padding: 20px 24px;
+    }
+    .video-link { font-size: 15px; color: #1565C0; word-break: break-all; }
+
+    .chapter-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+    .chapter-table th {
+      background: #FBE9E7;
+      padding: 8px 12px;
+      border: 1px solid #FFCCBC;
+      text-align: left;
+    }
+    .chapter-table td {
+      padding: 8px 12px;
+      border: 1px solid #FFCCBC;
+      vertical-align: top;
+    }
+    .chapter-table tr:nth-child(even) td { background: #FFF8F0; }
+
+    footer {
+      margin-top: 60px;
+      padding-top: 20px;
+      border-top: 1px solid #FFCCBC;
+      font-size: 13px;
+      color: #BCAAA4;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+<div class="container">
+
+  <h1>梦想改造家</h1>
+  <div class="subtitle">Dream Home Makeover — 游戏说明文档</div>
+
+  <!-- 1. 基本信息 -->
+  <section>
+    <h2>一、基本信息</h2>
+    <table class="info-table">
+      <tr><td>游戏标题</td><td>梦想改造家（Dream Home Makeover）</td></tr>
+      <tr><td>游戏类型</td><td>休闲合成 / 换装解谜</td></tr>
+      <tr><td>运行平台</td><td>HTML5（Chrome 最新版，双击 index.html 即可运行）</td></tr>
+      <tr><td>团队名称</td><td><span style="color:#E65100">【请填写团队名称】</span></td></tr>
+      <tr><td>团队成员</td><td><span style="color:#E65100">【请填写成员姓名及分工】</span></td></tr>
+    </table>
+  </section>
+
+  <!-- 2. 核心玩法 -->
+  <section>
+    <h2>二、核心玩法介绍</h2>
+    <div class="card">
+      <p>
+        《梦想改造家》是一款融合合成消除与换装布置的休闲游戏。玩家在 5×5 的网格棋盘上拖拽相同元素使其合并升级，积累材料后在配方工坊合成服装与家具，最终完成装扮与房间布置目标。游戏共五章，难度逐章递增，合成链层层嵌套——从粗布升级为绸缎、两块绸缎炼成丝绸，再以丝绸为核心材料裁制精美服装；同时以宝石、木料为辅线，打造灯具、书架、梳妆台等家居装饰。主线剧情讲述一位失忆少女寻回记忆、与母亲重建家园的温情故事，每章配有角色对话推进剧情，通关后可在装扮界面更换服装、在房间界面自由摆放家具。
+      </p>
+      <p style="margin-top:10px; font-size:13px; color:#8D6E63;">（共 196 字）</p>
+    </div>
+  </section>
+
+  <!-- 3. 操作指南 -->
+  <section>
+    <h2>三、操作指南</h2>
+    <div class="op-grid">
+      <div class="op-card">
+        <h3>基本操作</h3>
+        <ul>
+          <li><b>鼠标左键拖拽</b>：移动棋盘上的元素</li>
+          <li><b>拖拽到同类元素</b>：触发合成，升级为更高阶元素</li>
+          <li><b>点击空白处</b>：取消选中</li>
+          <li><b>滚轮</b>：在配方工坊、背包列表中上下滚动</li>
+        </ul>
+      </div>
+      <div class="op-card">
+        <h3>界面导航</h3>
+        <ul>
+          <li><b>主菜单</b>：选择章节进入关卡</li>
+          <li><b>关卡界面</b>：合成指定目标物品完成关卡</li>
+          <li><b>配方工坊</b>：消耗材料合成服装/家具</li>
+          <li><b>装扮界面</b>：穿戴已合成的服装</li>
+          <li><b>房间界面</b>：拖拽家具摆放到房间</li>
+        </ul>
+      </div>
+      <div class="op-card">
+        <h3>合成规则</h3>
+        <ul>
+          <li>每次合成消耗 <b>1步</b>，达到步数上限关卡失败</li>
+          <li>同阶元素相邻拖合 → 升级为下一阶</li>
+          <li>三阶（最高阶）元素合成 → 掉落对应材料到背包</li>
+          <li>棋盘被填满且无法合成时，可等待自动生成停止</li>
+        </ul>
+      </div>
+      <div class="op-card">
+        <h3>星级评分</h3>
+        <ul>
+          <li><b>3星</b>：在极少步数内完成所有目标</li>
+          <li><b>2星</b>：在较少步数内完成</li>
+          <li><b>1星</b>：完成所有目标即可</li>
+          <li>剩余步数越多，评分越高</li>
+        </ul>
+      </div>
+    </div>
+
+    <h3 style="margin-top:24px;">合成链一览</h3>
+    <div class="card" style="margin-top:8px;">
+      <div style="margin-bottom:12px;">
+        <b>布料链</b>
+        <div class="chain">
+          <span class="item-tag">粗布</span><span class="arrow">＋粗布→</span>
+          <span class="item-tag">细布</span><span class="arrow">＋细布→</span>
+          <span class="item-tag">绸缎</span><span class="arrow">＋绸缎→</span>
+          <span class="item-tag" style="background:#FFF9C4;border-color:#F9A825;">丝绸（材料）</span>
+        </div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <b>宝石链</b>
+        <div class="chain">
+          <span class="item-tag">碎晶</span><span class="arrow">＋碎晶→</span>
+          <span class="item-tag">小晶</span><span class="arrow">＋小晶→</span>
+          <span class="item-tag">宝晶</span><span class="arrow">＋宝晶→</span>
+          <span class="item-tag" style="background:#E3F2FD;border-color:#1565C0;">宝石碎片（材料）</span>
+        </div>
+      </div>
+      <div style="margin-bottom:12px;">
+        <b>木料链</b>
+        <div class="chain">
+          <span class="item-tag">木片</span><span class="arrow">＋木片→</span>
+          <span class="item-tag">木块</span><span class="arrow">＋木块→</span>
+          <span class="item-tag">木料</span><span class="arrow">＋木料→</span>
+          <span class="item-tag" style="background:#EFEBE9;border-color:#795548;">木板（材料）</span>
+        </div>
+      </div>
+      <div>
+        <b>植物链（副产品）</b>
+        <div class="chain">
+          <span class="item-tag">嫩叶→绿叶→茂叶</span><span class="arrow">→掉落</span>
+          <span class="item-tag">粗布</span>
+        </div>
+        <div class="chain">
+          <span class="item-tag">花苞→小花→盛花</span><span class="arrow">→掉落</span>
+          <span class="item-tag">粗布</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. 章节结构 -->
+  <section>
+    <h2>四、章节结构</h2>
+    <table class="chapter-table">
+      <tr>
+        <th>章节</th><th>标题</th><th>关卡数</th><th>章节目标</th><th>核心挑战</th>
+      </tr>
+      <tr>
+        <td>第一章</td><td>新的开始</td><td>3</td>
+        <td>合成日常裙装、放置旧木桌、布艺椅</td>
+        <td>熟悉合成规则，收集粗布与木板</td>
+      </tr>
+      <tr>
+        <td>第二章</td><td>神秘来信</td><td>2</td>
+        <td>合成出行外套、皮靴、书架、台灯</td>
+        <td>宝石与木料双线并行</td>
+      </tr>
+      <tr>
+        <td>第三章</td><td>隐藏的秘密</td><td>1</td>
+        <td>合成晚礼服、梳妆台、壁画</td>
+        <td>高阶材料（丝绸、切割宝石）首次使用</td>
+      </tr>
+      <tr>
+        <td>第四章</td><td>母亲的秘密</td><td>3</td>
+        <td>穿上晚礼服、出行外套、皮靴</td>
+        <td>目标数量增多，步数更紧张</td>
+      </tr>
+      <tr>
+        <td>第五章</td><td>重新开始</td><td>2</td>
+        <td>穿上全部四套服装</td>
+        <td>终极挑战：合成丝绸材料（最高阶）</td>
+      </tr>
+    </table>
+  </section>
+
+  <!-- 5. 游戏截图 -->
+  <section>
+    <h2>五、游戏截图</h2>
+    <div class="placeholder" style="margin-bottom:14px;">
+      请截取以下场景的截图（3-5张），替换下方占位框：<br>
+      ① 主菜单界面 &nbsp; ② 关卡合成界面 &nbsp; ③ 配方工坊界面 &nbsp; ④ 装扮界面 &nbsp; ⑤ 房间布置界面
+    </div>
+    <div class="screenshot-grid">
+      <div class="screenshot-slot">截图①<br>主菜单</div>
+      <div class="screenshot-slot">截图②<br>关卡界面</div>
+      <div class="screenshot-slot">截图③<br>配方工坊</div>
+      <div class="screenshot-slot">截图④<br>装扮界面</div>
+      <div class="screenshot-slot">截图⑤<br>房间布置</div>
+      <div class="screenshot-slot" style="border-style:solid; border-color:#E0E0E0; color:#E0E0E0;">（可选）</div>
+    </div>
+  </section>
+
+  <!-- 6. 试玩视频 -->
+  <section>
+    <h2>六、试玩视频</h2>
+    <div class="video-block">
+      <p style="margin-bottom:10px;">视频要求：时长不少于 3 分钟，需涵盖主菜单、至少两个关卡的完整流程、配方合成、服装穿戴全流程。</p>
+      <p class="placeholder">视频链接：<span style="color:#E65100">【请填写网盘链接或在线视频地址】</span></p>
+    </div>
+  </section>
+
+  <footer>
+    梦想改造家 · 游戏说明文档 · 请将截图和视频链接填写完整后上传至飞书云文档
+  </footer>
+
+</div>
+</body>
+</html>

@@ -245,6 +245,81 @@
       }
     }
 
+    // Inlined game data — no fetch() required, works with file:// protocol
+    const GAME_DATA = {
+      items: [
+        {"id":"leaf_1","name":"嫩叶","type":"merge_item","tier":1,"merge_into":"leaf_2","color":"#4CAF50"},
+        {"id":"leaf_2","name":"绿叶","type":"merge_item","tier":2,"merge_into":"leaf_3","color":"#388E3C"},
+        {"id":"leaf_3","name":"茂叶","type":"merge_item","tier":3,"merge_into":null,"drops":["fabric_1"],"color":"#1B5E20"},
+        {"id":"flower_1","name":"花苞","type":"merge_item","tier":1,"merge_into":"flower_2","color":"#E91E63"},
+        {"id":"flower_2","name":"小花","type":"merge_item","tier":2,"merge_into":"flower_3","color":"#C2185B"},
+        {"id":"flower_3","name":"盛花","type":"merge_item","tier":3,"merge_into":null,"drops":["fabric_1"],"color":"#880E4F"},
+        {"id":"gem_1","name":"碎晶","type":"merge_item","tier":1,"merge_into":"gem_2","color":"#2196F3"},
+        {"id":"gem_2","name":"小晶","type":"merge_item","tier":2,"merge_into":"gem_3","color":"#1565C0"},
+        {"id":"gem_3","name":"宝晶","type":"merge_item","tier":3,"merge_into":null,"drops":["gem_chip"],"color":"#0D47A1"},
+        {"id":"wood_1","name":"木片","type":"merge_item","tier":1,"merge_into":"wood_2","color":"#795548"},
+        {"id":"wood_2","name":"木块","type":"merge_item","tier":2,"merge_into":"wood_3","color":"#5D4037"},
+        {"id":"wood_3","name":"木料","type":"merge_item","tier":3,"merge_into":null,"drops":["plank"],"color":"#3E2723"},
+        {"id":"fabric_1","name":"粗布","type":"merge_item","tier":1,"merge_into":"fabric_2","color":"#FFF9C4"},
+        {"id":"fabric_2","name":"细布","type":"merge_item","tier":2,"merge_into":"fabric_3","color":"#FFF176"},
+        {"id":"fabric_3","name":"绸缎","type":"merge_item","tier":3,"merge_into":null,"drops":["sink"],"color":"#FFEE58"},
+        {"id":"sink","name":"丝绸","type":"material","category":"fabric","color":"#FFD700"},
+        {"id":"gem_chip","name":"宝石碎片","type":"material","category":"gem","color":"#B3E5FC"},
+        {"id":"cut_gem","name":"切割宝石","type":"material","category":"gem","color":"#81D4FA"},
+        {"id":"plank","name":"木板","type":"material","category":"wood","color":"#BCAAA4"},
+        {"id":"polished_wood","name":"抛光木材","type":"material","category":"wood","color":"#A1887F"},
+        {"id":"dress_casual","name":"日常裙装","type":"outfit","slot":"top","chapter":1,"color":"#F8BBD9"},
+        {"id":"coat_travel","name":"出行外套","type":"outfit","slot":"top","chapter":2,"color":"#B0BEC5"},
+        {"id":"boots_leather","name":"皮靴","type":"outfit","slot":"shoes","chapter":2,"color":"#6D4C41"},
+        {"id":"dress_evening","name":"晚礼服","type":"outfit","slot":"top","chapter":3,"color":"#7B1FA2"},
+        {"id":"table_old","name":"旧木桌","type":"furniture","room":"living_room","chapter":1,"color":"#8D6E63"},
+        {"id":"chair_fabric","name":"布艺椅","type":"furniture","room":"living_room","chapter":1,"color":"#EF9A9A"},
+        {"id":"bookshelf","name":"书架","type":"furniture","room":"bedroom","chapter":2,"color":"#A1887F"},
+        {"id":"lamp_desk","name":"台灯","type":"furniture","room":"bedroom","chapter":2,"color":"#FFF9C4"},
+        {"id":"dresser","name":"梳妆台","type":"furniture","room":"bedroom","chapter":3,"color":"#F8BBD9"},
+        {"id":"painting","name":"壁画","type":"furniture","room":"living_room","chapter":3,"color":"#E1BEE7"},
+      ],
+      chapters: [
+        {"id":1,"name":"新的开始","unlock_condition":null,"levels":["1_1","1_2","1_3"],"goals":[{"id":"equip_dress_casual","type":"equip","item_id":"dress_casual","description":"合成并穿上日常裙装"},{"id":"place_table_old","type":"place_furniture","item_id":"table_old","description":"放置旧木桌"},{"id":"place_chair_fabric","type":"place_furniture","item_id":"chair_fabric","description":"放置布艺椅"}]},
+        {"id":2,"name":"神秘来信","unlock_condition":{"chapter_complete":1},"levels":["2_1","2_2"],"goals":[{"id":"equip_coat_travel","type":"equip","item_id":"coat_travel","description":"合成并穿上出行外套"},{"id":"equip_boots_leather","type":"equip","item_id":"boots_leather","description":"合成并穿上皮靴"},{"id":"place_bookshelf","type":"place_furniture","item_id":"bookshelf","description":"放置书架"},{"id":"place_lamp_desk","type":"place_furniture","item_id":"lamp_desk","description":"放置台灯"}]},
+        {"id":3,"name":"隐藏的秘密","unlock_condition":{"chapter_complete":2},"levels":["3_1"],"goals":[{"id":"equip_dress_evening","type":"equip","item_id":"dress_evening","description":"合成并穿上晚礼服"},{"id":"place_dresser","type":"place_furniture","item_id":"dresser","description":"放置梳妆台"},{"id":"place_painting","type":"place_furniture","item_id":"painting","description":"放置壁画"}]},
+        {"id":4,"name":"母亲的秘密","unlock_condition":{"chapter_complete":3},"levels":["4_1","4_2","4_3"],"goals":[{"id":"ch4_equip_evening","type":"equip","item_id":"dress_evening","description":"穿上晚礼服"},{"id":"ch4_equip_coat","type":"equip","item_id":"coat_travel","description":"穿上出行外套"},{"id":"ch4_equip_boots","type":"equip","item_id":"boots_leather","description":"穿上皮靴"}]},
+        {"id":5,"name":"重新开始","unlock_condition":{"chapter_complete":4},"levels":["5_1","5_2"],"goals":[{"id":"ch5_equip_dress_casual","type":"equip","item_id":"dress_casual","description":"穿上日常裙装"},{"id":"ch5_equip_dress_evening","type":"equip","item_id":"dress_evening","description":"穿上晚礼服"},{"id":"ch5_equip_coat_travel","type":"equip","item_id":"coat_travel","description":"穿上出行外套"},{"id":"ch5_equip_boots_leather","type":"equip","item_id":"boots_leather","description":"穿上皮靴"}]}
+      ],
+      levels: {
+        "1_1": {"id":"1_1","chapter":1,"name":"初次尝试","grid_size":{"cols":5,"rows":5},"initial_items":[{"item_id":"leaf_1","col":0,"row":0},{"item_id":"leaf_1","col":2,"row":0},{"item_id":"leaf_1","col":4,"row":0},{"item_id":"wood_1","col":1,"row":2},{"item_id":"wood_1","col":3,"row":2},{"item_id":"flower_1","col":2,"row":4},{"item_id":"fabric_1","col":0,"row":4},{"item_id":"fabric_1","col":1,"row":4}],"goals":[{"item_id":"leaf_3","count":1}],"spawn_pool":["leaf_1","leaf_1","wood_1","flower_1","fabric_1"],"rewards":[{"item_id":"fabric_1","count":1}],"max_moves":20,"star_thresholds":{"1":1,"2":15,"3":10}},
+        "1_2": {"id":"1_2","chapter":1,"name":"布料收集","grid_size":{"cols":5,"rows":5},"initial_items":[{"item_id":"leaf_1","col":0,"row":0},{"item_id":"leaf_1","col":1,"row":0},{"item_id":"leaf_1","col":2,"row":0},{"item_id":"leaf_1","col":3,"row":0},{"item_id":"leaf_2","col":4,"row":0},{"item_id":"leaf_1","col":0,"row":2},{"item_id":"leaf_1","col":1,"row":2},{"item_id":"leaf_2","col":2,"row":2},{"item_id":"leaf_1","col":3,"row":2},{"item_id":"leaf_1","col":4,"row":2}],"goals":[{"item_id":"fabric_1","count":2},{"item_id":"leaf_3","count":1}],"spawn_pool":["leaf_1","leaf_1","leaf_1","flower_1"],"rewards":[{"item_id":"fabric_1","count":2},{"item_id":"fabric_2","count":1}],"max_moves":25,"star_thresholds":{"1":1,"2":20,"3":15}},
+        "1_3": {"id":"1_3","chapter":1,"name":"木材加工","grid_size":{"cols":5,"rows":5},"initial_items":[{"item_id":"wood_1","col":0,"row":0},{"item_id":"wood_1","col":1,"row":0},{"item_id":"wood_1","col":2,"row":0},{"item_id":"wood_1","col":3,"row":0},{"item_id":"wood_2","col":4,"row":0},{"item_id":"wood_1","col":0,"row":2},{"item_id":"wood_1","col":1,"row":2},{"item_id":"wood_2","col":2,"row":2},{"item_id":"wood_1","col":3,"row":2},{"item_id":"wood_1","col":4,"row":2}],"goals":[{"item_id":"plank","count":2},{"item_id":"leaf_3","count":1}],"spawn_pool":["wood_1","wood_1","wood_1","wood_1","leaf_1"],"rewards":[{"item_id":"plank","count":3}],"max_moves":30,"star_thresholds":{"1":1,"2":25,"3":18}},
+        "2_1": {"id":"2_1","chapter":2,"name":"宝石探索","grid_size":{"cols":5,"rows":5},"initial_items":[{"item_id":"gem_1","col":0,"row":0},{"item_id":"gem_1","col":1,"row":0},{"item_id":"gem_1","col":2,"row":0},{"item_id":"gem_1","col":3,"row":0},{"item_id":"gem_2","col":4,"row":0},{"item_id":"flower_1","col":0,"row":2},{"item_id":"flower_1","col":1,"row":2},{"item_id":"flower_1","col":2,"row":2},{"item_id":"flower_1","col":3,"row":2},{"item_id":"flower_2","col":4,"row":2},{"item_id":"fabric_1","col":0,"row":4},{"item_id":"fabric_1","col":1,"row":4},{"item_id":"fabric_2","col":2,"row":4}],"goals":[{"item_id":"gem_chip","count":2},{"item_id":"fabric_3","count":1}],"spawn_pool":["gem_1","gem_1","flower_1","fabric_1","gem_1"],"rewards":[{"item_id":"gem_chip","count":2},{"item_id":"fabric_2","count":2}],"max_moves":30,"star_thresholds":{"1":1,"2":25,"3":18}},
+        "2_2": {"id":"2_2","chapter":2,"name":"精细加工","grid_size":{"cols":5,"rows":5},"initial_items":[{"item_id":"gem_1","col":0,"row":0},{"item_id":"gem_1","col":1,"row":0},{"item_id":"gem_1","col":2,"row":0},{"item_id":"gem_1","col":3,"row":0},{"item_id":"gem_2","col":4,"row":0},{"item_id":"wood_1","col":0,"row":2},{"item_id":"wood_1","col":1,"row":2},{"item_id":"wood_1","col":2,"row":2},{"item_id":"wood_1","col":3,"row":2},{"item_id":"wood_2","col":4,"row":2},{"item_id":"gem_1","col":0,"row":4},{"item_id":"gem_1","col":1,"row":4},{"item_id":"wood_1","col":2,"row":4},{"item_id":"wood_1","col":3,"row":4}],"goals":[{"item_id":"plank","count":2},{"item_id":"gem_chip","count":3}],"spawn_pool":["gem_1","gem_1","wood_1","wood_1","gem_1"],"rewards":[{"item_id":"plank","count":2},{"item_id":"gem_chip","count":3}],"max_moves":35,"star_thresholds":{"1":1,"2":28,"3":20}},
+        "3_1": {"id":"3_1","chapter":3,"name":"最终挑战","grid_size":{"cols":5,"rows":5},"initial_items":[{"item_id":"gem_1","col":0,"row":0},{"item_id":"gem_1","col":1,"row":0},{"item_id":"gem_1","col":2,"row":0},{"item_id":"gem_1","col":3,"row":0},{"item_id":"gem_2","col":4,"row":0},{"item_id":"gem_1","col":0,"row":2},{"item_id":"gem_1","col":1,"row":2},{"item_id":"gem_2","col":2,"row":2},{"item_id":"wood_1","col":3,"row":2},{"item_id":"wood_1","col":4,"row":2},{"item_id":"wood_1","col":0,"row":4},{"item_id":"wood_1","col":1,"row":4},{"item_id":"wood_2","col":2,"row":4},{"item_id":"gem_1","col":3,"row":4},{"item_id":"fabric_2","col":4,"row":4}],"goals":[{"item_id":"gem_chip","count":3},{"item_id":"plank","count":2}],"spawn_pool":["gem_1","gem_1","wood_1","fabric_2","gem_1"],"rewards":[{"item_id":"gem_chip","count":3},{"item_id":"plank","count":2}],"max_moves":40,"star_thresholds":{"1":1,"2":32,"3":25}},
+        "4_1": {"id":"4_1","chapter":4,"name":"旧宅探索","grid_size":{"cols":5,"rows":5},"initial_items":[{"item_id":"gem_1","col":0,"row":0},{"item_id":"gem_1","col":1,"row":0},{"item_id":"gem_1","col":2,"row":0},{"item_id":"gem_1","col":3,"row":0},{"item_id":"wood_1","col":0,"row":2},{"item_id":"wood_1","col":1,"row":2},{"item_id":"wood_1","col":2,"row":2},{"item_id":"wood_1","col":3,"row":2},{"item_id":"gem_2","col":4,"row":0},{"item_id":"gem_2","col":4,"row":2}],"goals":[{"item_id":"gem_chip","count":4},{"item_id":"plank","count":2}],"spawn_pool":["gem_1","gem_1","wood_1","wood_1","gem_1"],"rewards":[{"item_id":"gem_chip","count":3},{"item_id":"plank","count":3}],"max_moves":35,"star_thresholds":{"1":1,"2":28,"3":20}},
+        "4_2": {"id":"4_2","chapter":4,"name":"整理房间","grid_size":{"cols":5,"rows":5},"initial_items":[{"item_id":"flower_1","col":0,"row":0},{"item_id":"flower_1","col":1,"row":0},{"item_id":"flower_1","col":2,"row":0},{"item_id":"flower_1","col":3,"row":0},{"item_id":"gem_1","col":0,"row":2},{"item_id":"gem_1","col":1,"row":2},{"item_id":"gem_1","col":2,"row":2},{"item_id":"gem_1","col":3,"row":2},{"item_id":"wood_2","col":4,"row":0},{"item_id":"wood_2","col":4,"row":2}],"goals":[{"item_id":"fabric_3","count":1},{"item_id":"gem_chip","count":2}],"spawn_pool":["flower_1","gem_1","fabric_1","fabric_1","gem_1"],"rewards":[{"item_id":"fabric_3","count":2},{"item_id":"gem_chip","count":3}],"max_moves":38,"star_thresholds":{"1":1,"2":30,"3":22}},
+        "4_3": {"id":"4_3","chapter":4,"name":"记忆碎片","grid_size":{"cols":5,"rows":5},"initial_items":[{"item_id":"gem_1","col":0,"row":0},{"item_id":"gem_1","col":1,"row":0},{"item_id":"gem_1","col":2,"row":0},{"item_id":"gem_1","col":3,"row":0},{"item_id":"gem_2","col":4,"row":0},{"item_id":"wood_1","col":0,"row":2},{"item_id":"wood_1","col":1,"row":2},{"item_id":"wood_1","col":2,"row":2},{"item_id":"wood_1","col":3,"row":2},{"item_id":"wood_2","col":4,"row":2},{"item_id":"gem_2","col":0,"row":4},{"item_id":"wood_2","col":1,"row":4}],"goals":[{"item_id":"gem_chip","count":4},{"item_id":"plank","count":3}],"spawn_pool":["gem_1","gem_1","wood_1","gem_2","wood_1"],"rewards":[{"item_id":"cut_gem","count":3},{"item_id":"polished_wood","count":3}],"max_moves":40,"star_thresholds":{"1":1,"2":32,"3":24}},
+        "5_1": {"id":"5_1","chapter":5,"name":"共同修缮","grid_size":{"cols":5,"rows":5},"initial_items":[{"item_id":"flower_1","col":0,"row":0},{"item_id":"flower_1","col":1,"row":0},{"item_id":"flower_1","col":2,"row":0},{"item_id":"flower_1","col":3,"row":0},{"item_id":"gem_1","col":0,"row":2},{"item_id":"gem_1","col":1,"row":2},{"item_id":"gem_1","col":2,"row":2},{"item_id":"gem_1","col":3,"row":2},{"item_id":"wood_1","col":0,"row":4},{"item_id":"wood_1","col":1,"row":4},{"item_id":"wood_1","col":2,"row":4},{"item_id":"wood_1","col":3,"row":4},{"item_id":"flower_2","col":4,"row":0},{"item_id":"fabric_1","col":4,"row":2},{"item_id":"fabric_1","col":4,"row":4}],"goals":[{"item_id":"fabric_3","count":2},{"item_id":"gem_chip","count":2}],"spawn_pool":["fabric_1","gem_1","fabric_1","fabric_2","gem_1"],"rewards":[{"item_id":"fabric_3","count":3},{"item_id":"gem_chip","count":3},{"item_id":"polished_wood","count":2}],"max_moves":42,"star_thresholds":{"1":1,"2":34,"3":26}},
+        "5_2": {"id":"5_2","chapter":5,"name":"焕然一新","grid_size":{"cols":5,"rows":5},"initial_items":[{"item_id":"gem_1","col":0,"row":0},{"item_id":"gem_1","col":1,"row":0},{"item_id":"gem_1","col":2,"row":0},{"item_id":"gem_1","col":3,"row":0},{"item_id":"gem_2","col":4,"row":0},{"item_id":"wood_1","col":0,"row":2},{"item_id":"wood_1","col":1,"row":2},{"item_id":"wood_1","col":2,"row":2},{"item_id":"wood_1","col":3,"row":2},{"item_id":"wood_2","col":4,"row":2},{"item_id":"flower_2","col":0,"row":4},{"item_id":"flower_2","col":1,"row":4},{"item_id":"gem_2","col":2,"row":4},{"item_id":"wood_2","col":3,"row":4}],"goals":[{"item_id":"gem_chip","count":3},{"item_id":"plank","count":2},{"item_id":"sink","count":1}],"spawn_pool":["gem_1","fabric_2","wood_1","fabric_1","gem_1"],"rewards":[{"item_id":"cut_gem","count":4},{"item_id":"polished_wood","count":3},{"item_id":"fabric_3","count":2}],"max_moves":45,"star_thresholds":{"1":1,"2":36,"3":28}}
+      },
+      recipes: [
+        {"id":"recipe_dress_casual","name":"日常裙装配方","result":"dress_casual","ingredients":[{"item_id":"fabric_1","count":3},{"item_id":"sink","count":1}],"chapter":1},
+        {"id":"recipe_table_old","name":"旧木桌配方","result":"table_old","ingredients":[{"item_id":"plank","count":3}],"chapter":1},
+        {"id":"recipe_chair_fabric","name":"布艺椅配方","result":"chair_fabric","ingredients":[{"item_id":"plank","count":2},{"item_id":"fabric_1","count":2}],"chapter":1},
+        {"id":"recipe_coat_travel","name":"出行外套配方","result":"coat_travel","ingredients":[{"item_id":"sink","count":2},{"item_id":"gem_chip","count":1}],"chapter":2},
+        {"id":"recipe_boots_leather","name":"皮靴配方","result":"boots_leather","ingredients":[{"item_id":"polished_wood","count":1},{"item_id":"sink","count":1}],"chapter":2},
+        {"id":"recipe_bookshelf","name":"书架配方","result":"bookshelf","ingredients":[{"item_id":"plank","count":4},{"item_id":"polished_wood","count":1}],"chapter":2},
+        {"id":"recipe_lamp_desk","name":"台灯配方","result":"lamp_desk","ingredients":[{"item_id":"gem_chip","count":2},{"item_id":"plank","count":1}],"chapter":2},
+        {"id":"recipe_dress_evening","name":"晚礼服配方","result":"dress_evening","ingredients":[{"item_id":"sink","count":2},{"item_id":"cut_gem","count":2}],"chapter":3},
+        {"id":"recipe_dresser","name":"梳妆台配方","result":"dresser","ingredients":[{"item_id":"polished_wood","count":3},{"item_id":"gem_chip","count":2}],"chapter":3},
+        {"id":"recipe_painting","name":"壁画配方","result":"painting","ingredients":[{"item_id":"cut_gem","count":1},{"item_id":"sink","count":1}],"chapter":3},
+      ],
+      stories: {
+        1: [{"id":"ch1_intro","trigger":"chapter_start","lines":[{"speaker":"旁白","text":"一间破旧的小屋，清晨的阳光透过裂缝照进来。"},{"speaker":"女主","text":"又是新的一天……"},{"speaker":"旁白","text":"她不记得自己从哪里来，只知道这里是她唯一的家。"}]},{"id":"ch1_complete","trigger":"chapter_complete","lines":[{"speaker":"女主","text":"终于，小屋有了一点家的样子。"},{"speaker":"旁白","text":"就在这时，门缝里滑进来一封信……"},{"speaker":"女主","text":"这是……谁寄来的？"}]}],
+        2: [{"id":"ch2_intro","trigger":"chapter_start","lines":[{"speaker":"旁白","text":"那封信没有署名，只有一行字：'你的过去，藏在镇子的东边。'"},{"speaker":"女主","text":"我的过去……"},{"speaker":"旁白","text":"她决定出门，去寻找答案。"}]},{"id":"ch2_complete","trigger":"chapter_complete","lines":[{"speaker":"女主","text":"书架上的旧书……这些都是我的？"},{"speaker":"旁白","text":"书页间夹着一张褪色的照片，照片里有一个她不认识的女人。"},{"speaker":"女主","text":"这个人……是谁？"}]}],
+        3: [{"id":"ch3_intro","trigger":"chapter_start","lines":[{"speaker":"旁白","text":"照片背面写着一个地址，和一句话：'来找我，孩子。'"},{"speaker":"女主","text":"孩子……她认识我？"},{"speaker":"旁白","text":"她换上最好的衣服，准备赴约。"}]},{"id":"ch3_complete","trigger":"chapter_complete","lines":[{"speaker":"神秘女人","text":"你终于来了。我等了你很久。"},{"speaker":"女主","text":"你是谁？你认识我？"},{"speaker":"神秘女人","text":"我是你的母亲。"},{"speaker":"旁白","text":"世界在这一刻静止了……"}]}],
+        4: [{"id":"ch4_intro","trigger":"chapter_start","lines":[{"speaker":"母亲","text":"这里就是你出生的地方，孩子。"},{"speaker":"女主","text":"一切都这么陌生……"},{"speaker":"旁白","text":"老宅的每一个角落，都藏着她遗忘的故事。"}]},{"id":"ch4_complete","trigger":"chapter_complete","lines":[{"speaker":"女主","text":"我记起来了，这件衣服……是你为我做的。"},{"speaker":"母亲","text":"你终于记得了。"},{"speaker":"旁白","text":"记忆的碎片，正在一片片拼回来。"}]}],
+        5: [{"id":"ch5_intro","trigger":"chapter_start","lines":[{"speaker":"女主","text":"妈，我们把这里改造成真正的家吧。"},{"speaker":"母亲","text":"好，我们一起。"},{"speaker":"旁白","text":"她们开始了新的生活，用双手重建失去的时光。"}]},{"id":"ch5_complete","trigger":"chapter_complete","lines":[{"speaker":"旁白","text":"那天的夕阳很美，像是所有失去的时光都回来了。"},{"speaker":"女主","text":"妈，谢谢你等我。"},{"speaker":"母亲","text":"只要你回来，等多久都值得。"}]}]
+      }
+    };
+
     class DataLoader {
       constructor() {
         this.items = [];
@@ -256,43 +331,11 @@
 
       async loadAll() {
         try {
-          // Load items
-          const itemsRes = await fetch('data/items/items.json');
-          if (!itemsRes.ok) throw new Error(`Failed to load items: ${itemsRes.status}`);
-          this.items = await itemsRes.json();
-
-          // Load chapters
-          const chaptersRes = await fetch('data/chapters/chapters.json');
-          if (!chaptersRes.ok) throw new Error(`Failed to load chapters: ${chaptersRes.status}`);
-          this.chapters = await chaptersRes.json();
-
-          // Load all levels
-          for (const chapterData of this.chapters) {
-            const chapter = chapterData.id;
-            for (const levelId of chapterData.levels) {
-              const levelRes = await fetch(`data/levels/chapter${chapter}/level_${levelId}.json`);
-              if (!levelRes.ok) throw new Error(`Failed to load level ${levelId}: ${levelRes.status}`);
-              const levelData = await levelRes.json();
-              this.levels[levelId] = levelData;
-            }
-          }
-
-          // Load recipes
-          const recipesRes = await fetch('data/recipes/recipes.json');
-          if (recipesRes.ok) {
-            this.recipes = await recipesRes.json();
-          }
-
-          // Load stories (optional - don't fail if missing)
-          for (let ch = 1; ch <= 5; ch++) {
-            try {
-              const storyRes = await fetch(`data/story/chapter${ch}_story.json`);
-              if (storyRes.ok) {
-                this.stories[ch] = await storyRes.json();
-              }
-            } catch (e) { /* story files are optional */ }
-          }
-
+          this.items = GAME_DATA.items;
+          this.chapters = GAME_DATA.chapters;
+          this.levels = GAME_DATA.levels;
+          this.recipes = GAME_DATA.recipes;
+          this.stories = GAME_DATA.stories;
           return true;
         } catch (e) {
           console.error('Data loading failed:', e);
@@ -376,6 +419,7 @@
           'assets/items/fabric_1.png',
           'assets/items/fabric_2.png',
           'assets/items/fabric_3.png',
+          'assets/items/sink.png',
           'assets/items/gem_chip.png',
           'assets/items/cut_gem.png',
           'assets/items/plank.png',
@@ -409,10 +453,8 @@
             img.onload = () => {
               const key = path.split('/').pop().replace(/\.(png|jpg)$/, '');
               this.images[key] = img;
-              // Process furniture and item images to remove black background
-              if (path.includes('/furniture/') || path.includes('/items/')) {
-                this.processedImages[key] = this.removeBlackBackground(img);
-              }
+              // PNGs already have transparent backgrounds — skip canvas processing
+              // (getImageData is blocked under file:// protocol)
               this.loadedAssets++;
               if (onProgress) {
                 onProgress(this.loadedAssets, this.totalAssets);
@@ -1431,7 +1473,16 @@
         this.game.canvas.removeEventListener('wheel', this._onWheel);
       }
 
+      alreadyOwned(recipe) {
+        const resultItem = this.game.dataLoader.getItem(recipe.result);
+        if (resultItem && (resultItem.type === 'furniture' || resultItem.type === 'outfit')) {
+          return this.game.gameState.hasItem(recipe.result);
+        }
+        return false;
+      }
+
       canCraft(recipe) {
+        if (this.alreadyOwned(recipe)) return false;
         return recipe.ingredients.every(ing =>
           this.game.gameState.hasItem(ing.item_id, ing.count)
         );
@@ -1497,7 +1548,12 @@
           ctx.font = '12px "Microsoft YaHei", Arial';
           ctx.fillText(ingStr, 78, y + 45);
 
-          if (this.canCraft(recipe)) {
+          if (this.alreadyOwned(recipe)) {
+            ctx.fillStyle = '#E53935';
+            ctx.font = 'bold 13px "Microsoft YaHei", Arial';
+            ctx.textAlign = 'right';
+            ctx.fillText('已拥有', this.LIST_W - 8, y + 42);
+          } else if (this.canCraft(recipe)) {
             ctx.fillStyle = '#4CAF50';
             ctx.font = 'bold 13px "Microsoft YaHei", Arial';
             ctx.textAlign = 'right';
@@ -1574,6 +1630,7 @@
           iy += 36;
         }
 
+        const alreadyOwned = this.alreadyOwned(recipe);
         const canCraft = this.canCraft(recipe);
         ctx.fillStyle = canCraft ? '#4CAF50' : '#BDBDBD';
         ctx.beginPath();
@@ -1583,14 +1640,14 @@
         ctx.font = 'bold 20px "Microsoft YaHei", Arial';
         ctx.textAlign = 'center';
         ctx.textBaseline = 'middle';
-        ctx.fillText('合成', 600, 451);
+        ctx.fillText(alreadyOwned ? '已拥有' : '合成', 600, 451);
         ctx.textBaseline = 'alphabetic';
 
         const ownedResult = this.game.gameState.inventory[recipe.result] || 0;
-        ctx.fillStyle = '#888';
+        ctx.fillStyle = alreadyOwned ? '#E53935' : '#888';
         ctx.font = '14px "Microsoft YaHei", Arial';
         ctx.textAlign = 'center';
-        ctx.fillText(`已拥有: ${ownedResult}`, 600, 498);
+        ctx.fillText(alreadyOwned ? `已拥有 ×${ownedResult}，无需重复合成` : `已拥有: ${ownedResult}`, 600, 498);
       }
 
       onMouseDown(x, y) {
@@ -1663,6 +1720,15 @@
         ctx.fill();
 
         const charImg = this.game.assetLoader.getImage('character');
+        const equippedOutfit = this.game.gameState.outfit;
+        // Tint character area background based on equipped outfit
+        const tintItem = equippedOutfit.top ? this.game.dataLoader.getItem(equippedOutfit.top) : null;
+        if (tintItem) {
+          ctx.fillStyle = tintItem.color + '55';
+          ctx.beginPath();
+          ctx.roundRect(20, 60, 370, 430, 12);
+          ctx.fill();
+        }
         if (charImg) {
           const maxW = 330, maxH = 390;
           const ratio = Math.min(maxW / charImg.width, maxH / charImg.height);
@@ -1674,6 +1740,31 @@
           ctx.ellipse(205, 140, 38, 48, 0, 0, Math.PI * 2);
           ctx.fill();
           ctx.fillRect(165, 185, 80, 200);
+        }
+        // Overlay equipped outfit images on character
+        if (equippedOutfit.top) {
+          const topImg = this.game.assetLoader.getImage(equippedOutfit.top);
+          if (topImg) {
+            ctx.globalAlpha = 0.92;
+            ctx.drawImage(topImg, 205 - 60, 170, 120, 120);
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = '#C62828';
+            ctx.font = 'bold 12px "Microsoft YaHei", Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('✓ 已穿戴', 205, 304);
+          }
+        }
+        if (equippedOutfit.shoes) {
+          const shoesImg = this.game.assetLoader.getImage(equippedOutfit.shoes);
+          if (shoesImg) {
+            ctx.globalAlpha = 0.92;
+            ctx.drawImage(shoesImg, 205 - 40, 360, 80, 80);
+            ctx.globalAlpha = 1.0;
+            ctx.fillStyle = '#C62828';
+            ctx.font = 'bold 12px "Microsoft YaHei", Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText('✓ 已穿戴', 205, 450);
+          }
         }
 
         // Slot panel (right)
